@@ -1,0 +1,7 @@
+"use server";
+import {revalidatePath} from "next/cache";import {requireCmsUser} from "@/lib/auth/require-cms-user";import {createClient} from "@/lib/supabase/server";
+async function admin(){const u=await requireCmsUser();if(u.role!=="admin")throw new Error("Admin access required.");return u}
+export async function restoreProject(fd:FormData){const u=await admin(),s=await createClient(),id=String(fd.get("id"));await s.from("projects").update({deleted_at:null,updated_by:u.id,updated_at:new Date().toISOString()}).eq("id",id);revalidatePath("/admin/trash");revalidatePath("/admin/projects")}
+export async function deleteProjectForever(fd:FormData){await admin();const s=await createClient();await s.from("projects").delete().eq("id",String(fd.get("id")));revalidatePath("/admin/trash")}
+export async function restoreDesign(fd:FormData){const u=await admin(),s=await createClient(),id=String(fd.get("id"));await s.from("designs").update({deleted_at:null,updated_by:u.id,updated_at:new Date().toISOString()}).eq("id",id);revalidatePath("/admin/trash");revalidatePath("/admin/designs");revalidatePath("/archive")}
+export async function deleteDesignForever(fd:FormData){await admin();const s=await createClient();await s.from("designs").delete().eq("id",String(fd.get("id")));revalidatePath("/admin/trash")}
