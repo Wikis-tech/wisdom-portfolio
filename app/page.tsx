@@ -9,7 +9,7 @@ export default async function HomePage(){
  const [
   {data:h},{data:sections},{data:featured},{data:about},{data:designs},
   {data:skills},{data:experiments},{data:services},{data:pricingSettings},
-  {data:packages},{data:nowItems}
+  {data:packages},{data:nowItems},{data:testimonials}
  ]=await Promise.all([
   s.from("hero_settings").select("*").eq("singleton_key","default").single(),
   s.from("page_sections").select("*").eq("page_key","home").eq("enabled",true).order("sort_order"),
@@ -21,7 +21,8 @@ export default async function HomePage(){
   s.from("services").select("id,title,short_description,icon,cta_label,cta_url,featured").eq("enabled",true).is("deleted_at",null).order("featured",{ascending:false}).order("sort_order").limit(4),
   s.from("pricing_settings").select("*").eq("singleton_key","default").single(),
   s.from("pricing_packages").select("*").eq("visibility",true).is("deleted_at",null).order("sort_order").limit(3),
-  s.from("now_items").select("*").eq("visible",true).order("sort_order")
+  s.from("now_items").select("*").eq("visible",true).order("sort_order"),
+  s.from("testimonials").select("id,name,position,company,photo_url,quote,featured,sort_order").eq("visibility",true).is("deleted_at",null).order("featured",{ascending:false}).order("sort_order").limit(6)
  ]);
  const rawWords=h?.rotating_words;
  const words=Array.isArray(rawWords)?rawWords.filter((x:unknown):x is string=>typeof x==="string"):["WORK.","MATTER.","MOVE.","SCALE.","CONNECT."];
@@ -48,6 +49,8 @@ export default async function HomePage(){
   pricing:<section className="mx-auto w-[min(1200px,calc(100%-40px))] py-24">{pricingSettings?.enabled?<><p className="text-xs font-semibold tracking-[.18em] text-[#6f8cff]">PRICING</p><div className="mt-4 flex items-end justify-between gap-4"><h2 className="max-w-3xl text-4xl font-semibold tracking-[-.04em] sm:text-6xl">{pricingSettings.heading}</h2><Link href="/pricing" className="hidden text-sm text-white/50 sm:block">See pricing ↗</Link></div><p className="mt-5 max-w-2xl text-base leading-7 text-white/45">{pricingSettings.description}</p>{packages?.length?<div className="mt-10 grid gap-3 md:grid-cols-3">{packages.map(p=><article key={p.id} className={`rounded-2xl border p-5 ${p.featured?"border-[#5b72ff]/40 bg-[#174fc4]/[.08]":"border-white/[.08] bg-white/[.025]"}`}><p className="text-xs uppercase tracking-[.14em] text-white/30">{p.package_name}</p><p className="mt-8 text-2xl font-semibold">{p.custom_quote?"Custom Quote":p.starting_price!=null?`${p.currency==="NGN"?"₦":p.currency+" "}${Number(p.starting_price).toLocaleString()}`:"Let’s discuss"}</p></article>)}</div>:null}</>:<div className="rounded-3xl border border-white/[.08] bg-white/[.02] p-8"><p className="text-sm text-white/45">Pricing is handled by scope. Tell me what you’re building and we’ll work out a sensible approach.</p><Link href="/contact" className="mt-5 inline-block text-sm text-white/70">Start a conversation ↗</Link></div>}</section>,
 
   now:<section className="mx-auto w-[min(1200px,calc(100%-40px))] py-24"><p className="text-xs font-semibold tracking-[.18em] text-[#6f8cff]">RIGHT NOW</p><h2 className="mt-4 text-4xl font-semibold tracking-[-.04em] sm:text-6xl">What has my attention.</h2>{nowItems?.length?<div className="mt-10 grid gap-3 md:grid-cols-2">{nowItems.map(x=><article key={x.id} className="rounded-2xl border border-white/[.08] bg-white/[.025] p-5"><p className="text-[10px] font-semibold uppercase tracking-[.18em] text-white/30">{x.label}</p>{x.url?<Link href={x.url} className="mt-4 block text-lg text-white/70">{x.text} ↗</Link>:<p className="mt-4 text-lg text-white/70">{x.text}</p>}</article>)}</div>:<Empty text="Add Now items from the CMS to show what you are building, learning and exploring."/>}</section>,
+
+  testimonials:testimonials?.length?<section className="mx-auto w-[min(1200px,calc(100%-40px))] py-24"><p className="text-xs font-semibold tracking-[.18em] text-[#6f8cff]">TESTIMONIALS</p><h2 className="mt-4 max-w-3xl text-4xl font-semibold tracking-[-.04em] sm:text-6xl">What people say after working together.</h2><div className="mt-10 grid gap-4 md:grid-cols-2">{testimonials.map((x,i)=><article key={x.id} className={`rounded-3xl border border-white/[.08] bg-white/[.025] p-6 sm:p-8 ${i===0&&x.featured?"md:col-span-2":""}`}><p className="text-lg leading-8 text-white/70">“{x.quote}”</p><div className="mt-8"><p className="font-medium">{x.name}</p><p className="mt-1 text-sm text-white/35">{[x.position,x.company].filter(Boolean).join(" · ")}</p></div></article>)}</div></section>:null,
 
   contact_cta:<section className="mx-auto w-[min(1320px,calc(100%-40px))] py-28"><div className="rounded-[36px] border border-white/[.08] bg-[radial-gradient(circle_at_80%_20%,rgba(40,103,232,.14),transparent_35%),rgba(255,255,255,.025)] p-7 sm:p-12"><p className="text-xs font-semibold tracking-[.18em] text-[#6f8cff]">HAVE AN IDEA?</p><h2 className="mt-5 max-w-4xl text-5xl font-semibold tracking-[-.05em] sm:text-7xl">Let’s build something useful.</h2><p className="mt-6 max-w-2xl text-base leading-7 text-white/45">Whether it’s a product, website, campaign, experiment or something that doesn’t quite fit a category yet—tell me about it.</p><Link href="/contact" className="mt-8 inline-block rounded-full bg-white px-5 py-3 text-sm font-semibold text-black">Start a conversation ↗</Link></div></section>
  };
