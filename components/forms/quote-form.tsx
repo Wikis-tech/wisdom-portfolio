@@ -1,6 +1,6 @@
 "use client";
 
-import {FormEvent,useState} from "react";
+import {FormEvent,useState,type ReactNode} from "react";
 
 type State={kind:"idle"|"sending"|"success"|"error";message:string};
 
@@ -44,4 +44,4 @@ export function QuoteForm(){
   <div className="flex flex-wrap items-center gap-4"><button disabled={state.kind==="sending"} className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-black transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50">{state.kind==="sending"?"Submitting…":"Request a quote ↗"}</button><p aria-live="polite" className={`text-sm ${state.kind==="error"?"text-red-300":state.kind==="success"?"text-emerald-300":"text-white/35"}`}>{state.message}</p></div>
  </form>
 }
-function L({text,children}:{text:string;children:React.ReactNode}){return <label className="block"><span className="mb-2 block text-sm text-white/55">{text}</span>{children}</label>}
+function L({text,children}:{text:string;children:ReactNode}){return <label className="block"><span className="mb-2 block text-sm text-white/55">{text}</span>{children}</label>}
