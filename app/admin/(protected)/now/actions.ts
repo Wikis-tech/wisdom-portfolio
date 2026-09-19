@@ -1,0 +1,6 @@
+"use server";
+import {revalidatePath} from "next/cache";import {requireCmsUser} from "@/lib/auth/require-cms-user";import {createClient} from "@/lib/supabase/server";
+const t=(v:FormDataEntryValue|null)=>{const s=String(v??"").trim();return s||null};
+export async function createNow(fd:FormData){const u=await requireCmsUser(),s=await createClient();await s.from("now_items").insert({label:String(fd.get("label")??"").trim(),text:String(fd.get("text")??"").trim(),url:t(fd.get("url")),sort_order:Number(fd.get("sortOrder")||0),visible:true,created_by:u.id,updated_by:u.id});revalidatePath("/");revalidatePath("/admin/now")}
+export async function saveNow(fd:FormData){const u=await requireCmsUser(),s=await createClient();await s.from("now_items").update({label:String(fd.get("label")??"").trim(),text:String(fd.get("text")??"").trim(),url:t(fd.get("url")),sort_order:Number(fd.get("sortOrder")||0),visible:fd.get("visible")==="on",updated_by:u.id,updated_at:new Date().toISOString()}).eq("id",String(fd.get("id")));revalidatePath("/");revalidatePath("/admin/now")}
+export async function deleteNow(fd:FormData){await requireCmsUser();const s=await createClient();await s.from("now_items").delete().eq("id",String(fd.get("id")));revalidatePath("/");revalidatePath("/admin/now")}
