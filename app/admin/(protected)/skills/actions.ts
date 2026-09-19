@@ -1,0 +1,5 @@
+"use server";
+import {revalidatePath} from "next/cache";import {requireCmsUser} from "@/lib/auth/require-cms-user";import {createClient} from "@/lib/supabase/server";
+export async function createSkill(fd:FormData){const u=await requireCmsUser(),s=await createClient();await s.from("skills").insert({name:String(fd.get("name")??"").trim(),group_name:String(fd.get("group")),sort_order:Number(fd.get("sortOrder")||0),created_by:u.id,updated_by:u.id});revalidatePath("/about");revalidatePath("/admin/skills")}
+export async function saveSkill(fd:FormData){const u=await requireCmsUser(),s=await createClient();await s.from("skills").update({name:String(fd.get("name")??"").trim(),group_name:String(fd.get("group")),sort_order:Number(fd.get("sortOrder")||0),is_visible:fd.get("visible")==="on",updated_by:u.id,updated_at:new Date().toISOString()}).eq("id",String(fd.get("id")));revalidatePath("/about");revalidatePath("/admin/skills")}
+export async function deleteSkill(fd:FormData){await requireCmsUser();const s=await createClient();await s.from("skills").delete().eq("id",String(fd.get("id")));revalidatePath("/about");revalidatePath("/admin/skills")}
