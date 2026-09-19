@@ -1,6 +1,6 @@
 -- Phase 7: lead capture, quote CRM, contact inbox and testimonials.
 
-create table public.contact_messages (
+alter table public.activity_logs alter column user_id drop not null;\n\ncreate table public.contact_messages (
   id uuid primary key default gen_random_uuid(),
   name text not null check (char_length(name) between 2 and 120),
   email text not null check (char_length(email) <= 254),
