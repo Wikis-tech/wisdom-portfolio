@@ -1,0 +1,33 @@
+name: Phase 7 Build Verification
+
+on:
+  push:
+    branches:
+      - phase/07-leads-contact
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Install dependencies
+        run: npm install
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: https://mgzvfhrnrrvbmajkrmgp.supabase.co
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
+          NEXT_PUBLIC_SITE_URL: https://wisdom-portfolio-git-phase-07-leads-contact-campus-link.vercel.app
+        run: npm run build
