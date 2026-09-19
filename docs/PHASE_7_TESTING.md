@@ -111,3 +111,7 @@ Supabase Auth currently still reports Leaked Password Protection Disabled. Enabl
 ## Vercel note
 
 The Next.js project excludes supabase/functions/**/* from its TypeScript compile because Edge Functions run in the Supabase Deno runtime, not the Next.js runtime.
+
+## Deployment verification marker
+
+A fresh Vercel preview must build from this branch after the quote-page syntax repair. Do not accept deployments pinned to commit c25adc or older.
