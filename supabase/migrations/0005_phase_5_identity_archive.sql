@@ -172,3 +172,28 @@ create index experiences_visible_sort_idx on public.experiences(is_visible,sort_
 create index skills_group_sort_idx on public.skills(group_name,sort_order);
 create index technologies_category_sort_idx on public.technologies(category,sort_order);
 create index designs_public_sort_idx on public.designs(visibility,deleted_at,featured,sort_order);
+
+create table public.design_media (
+  id uuid primary key default gen_random_uuid(),
+  design_id uuid not null references public.designs(id) on delete cascade,
+  image_url text not null,
+  caption text,
+  alt_text text,
+  sort_order integer not null default 0,
+  created_at timestamptz not null default now()
+);
+alter table public.design_media enable row level security;
+grant select on public.design_media to anon, authenticated;
+grant insert, update, delete on public.design_media to authenticated;
+create policy "design_media_public_read" on public.design_media for select to anon, authenticated using (
+  exists (
+    select 1 from public.designs d
+    where d.id=design_media.design_id
+      and d.visibility='public'
+      and d.deleted_at is null
+  ) or (select private.is_cms_user())
+);
+create policy "design_media_cms_write" on public.design_media for all to authenticated
+using ((select private.is_cms_user()))
+with check ((select private.is_cms_user()));
+create index design_media_design_sort_idx on public.design_media(design_id,sort_order);
