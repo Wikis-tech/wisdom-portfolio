@@ -1,0 +1,1 @@
+import {SimplePage} from "@/components/portfolio/simple-page";export default function Pricing(){return <SimplePage eyebrow="PRICING" title="Let's talk scope." copy="Every project is different. Pricing packages will be managed from the CMS in the dedicated pricing phase rather than hard-coded here."/>}
