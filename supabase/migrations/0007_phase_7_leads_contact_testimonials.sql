@@ -133,6 +133,15 @@ $$;
 revoke execute on function public.consume_form_rate_limit(text,integer,integer) from public, anon, authenticated;
 grant execute on function public.consume_form_rate_limit(text,integer,integer) to service_role;
 
+create policy "form_rate_limits_no_client_access" on public.form_rate_limits
+for all to anon, authenticated
+using (false)
+with check (false);
+
+create index testimonials_project_idx on public.testimonials(project_id);
+create index testimonials_created_by_idx on public.testimonials(created_by);
+create index testimonials_updated_by_idx on public.testimonials(updated_by);
+
 create index contact_messages_status_created_idx on public.contact_messages(status,created_at desc);
 create index quote_requests_status_created_idx on public.quote_requests(status,created_at desc);
 create index testimonials_public_sort_idx on public.testimonials(visibility,deleted_at,featured,sort_order);
