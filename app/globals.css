@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+:root {
+  --background: #06070b;
+  --background-soft: #0b0d14;
+  --surface: rgba(255, 255, 255, 0.045);
+  --surface-hover: rgba(255, 255, 255, 0.075);
+  --border: rgba(255, 255, 255, 0.10);
+  --blue: #174fc4;
+  --blue-bright: #2867e8;
+  --blue-deep: #102c83;
+  --purple: #6935c7;
+  --purple-bright: #8654e8;
+  --text-primary: #f7f8fc;
+  --text-secondary: #a9afbf;
+  --text-muted: #707788;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--background);
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 80% 10%, rgba(40, 103, 232, 0.08), transparent 28rem),
+    var(--background);
+  color: var(--text-primary);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--blue-bright);
+  outline-offset: 3px;
+}
+
+.shell {
+  width: min(1200px, calc(100% - 40px));
+  margin-inline: auto;
+}
+
+.surface {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(18px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
