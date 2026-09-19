@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const groups = [
   { label: "", items: [["Overview","/admin"]] },
-  { label: "CONTENT", items: [["Home","/admin/pages/home"],["Projects","/admin/projects"],["Design Archive","/admin/designs"],["Lab","/admin/lab"],["About","/admin/about"],["Experience","/admin/experience"]] },
+  { label: "CONTENT", items: [["Home","/admin/pages/home"],["Projects","/admin/projects"],["Design Archive","/admin/designs"],["Lab","/admin/lab"],["About","/admin/about"],["Experience","/admin/experience"],["Now","/admin/now"]] },
   { label: "BUSINESS", items: [["Services","/admin/services"],["Pricing","/admin/pricing"],["Quotes","/admin/quotes"],["Messages","/admin/messages"]] },
   { label: "SITE", items: [["Skills","/admin/skills"],["Technologies","/admin/technologies"],["Testimonials","/admin/testimonials"],["Navigation","/admin/navigation"],["Media","/admin/media"],["SEO","/admin/seo"]] },
   { label: "SETTINGS", items: [["Site Settings","/admin/settings"],["Trash","/admin/trash"]] },
