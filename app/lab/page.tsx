@@ -1,0 +1,1 @@
+import {SimplePage} from "@/components/portfolio/simple-page";export default function Lab(){return <SimplePage eyebrow="THE LAB" title="Things I build because curiosity rarely waits for a brief." copy="Experiments, prototypes, games, AI ideas and interface studies will live here as they are published from the Lab CMS."/>}
