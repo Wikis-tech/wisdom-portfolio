@@ -1,25 +1,5 @@
 import Link from "next/link";
+import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { requireCmsUser } from "@/lib/auth/require-cms-user";
 import { signOut } from "./actions";
-
-export default async function AdminProtectedLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const user = await requireCmsUser();
-  return (
-    <div className="min-h-screen bg-[var(--background-soft)]">
-      <header className="border-b border-[var(--border)]">
-        <div className="shell flex min-h-16 items-center justify-between gap-4">
-          <div><p className="text-xs font-bold tracking-[0.22em]">WIKIS TECH</p><p className="text-xs text-[var(--text-muted)]">Portfolio Control Center</p></div>
-          <nav className="flex items-center gap-3 text-sm">
-            <Link className="text-[var(--text-secondary)]" href="/">View Portfolio ↗</Link>
-            <form action={signOut}><button className="rounded-lg border border-[var(--border)] px-3 py-2" type="submit">Sign out</button></form>
-          </nav>
-        </div>
-      </header>
-      <div className="shell py-10">
-        <p className="text-sm text-[var(--text-muted)]">Signed in as {user.role}</p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-[-0.04em]">Good to see you, {user.displayName || "Wisdom"}.</h1>
-        <div className="mt-8">{children}</div>
-      </div>
-    </div>
-  );
-}
+export default async function AdminProtectedLayout({children}:{children:React.ReactNode}){const user=await requireCmsUser();return <div className="min-h-screen bg-[#0b0d12] text-white"><AdminSidebar/><div className="lg:pl-64"><header className="sticky top-0 z-20 border-b border-white/10 bg-[#0b0d12]/90 backdrop-blur-xl"><div className="flex min-h-16 items-center justify-between px-5 sm:px-8"><div><p className="text-xs text-white/40">Portfolio Control Center</p><p className="text-sm font-medium">{user.displayName||"Wisdom"} <span className="text-white/30">· {user.role}</span></p></div><div className="flex gap-2"><Link href="/" className="rounded-lg px-3 py-2 text-sm text-white/60">Portfolio ↗</Link><form action={signOut}><button className="rounded-lg border border-white/10 px-3 py-2 text-sm text-white/70">Sign out</button></form></div></div></header><div className="px-5 py-8 sm:px-8 lg:px-10 lg:py-10">{children}</div></div></div>}
