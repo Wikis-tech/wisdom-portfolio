@@ -19,24 +19,37 @@ export default async function ProjectEditor({params}:{params:Promise<{id:string}
 
  return <main className="mx-auto max-w-5xl">
   <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
-   <div><p className="text-xs font-semibold tracking-[.18em] text-[#6f8cff]">PROJECT EDITOR</p><h1 className="mt-3 text-4xl font-semibold">{p.title}</h1><p className="mt-2 text-sm text-white/40">{p.content_state} · {p.status.replaceAll("_"," ")}</p></div>
-   <div className="flex flex-wrap gap-2"><Link href={`/admin/projects/${id}/preview`} className="rounded-xl border border-white/10 px-4 py-2.5 text-sm">Preview</Link><form action={publishProject}><input type="hidden" name="id" value={id}/><button className="rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-black">Publish</button></form></div>
+   <div>
+    <p className="text-xs font-semibold tracking-[.18em] text-[#6f8cff]">PROJECT EDITOR</p>
+    <h1 className="mt-3 text-4xl font-semibold">{p.title}</h1>
+    <p className="mt-2 text-sm text-white/40">{p.content_state} · {p.status.replaceAll("_"," ")}</p>
+   </div>
+   <div className="flex flex-wrap gap-2">
+    <Link href={`/admin/projects/${id}/preview`} className="rounded-xl border border-white/10 px-4 py-2.5 text-sm">Preview</Link>
+    <button form="project-editor-form" formAction={publishProject} className="rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-black">Save & Publish</button>
+   </div>
   </div>
 
-  <form action={updateProject} className="mt-8 space-y-6">
+  <form id="project-editor-form" action={updateProject} className="mt-8 space-y-6">
    <input type="hidden" name="id" value={id}/>
    <section className="rounded-2xl border border-white/[.08] bg-white/[.02] p-6">
-    <h2 className="text-lg font-semibold">Project basics</h2>
+    <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-end">
+     <div><h2 className="text-lg font-semibold">Project basics</h2><p className="mt-1 text-xs leading-5 text-white/35">Public + published = appears on Work. Turn on “Show on homepage” to include it in Selected Work.</p></div>
+     {p.content_state==="published"&&p.visibility==="public"&&<Link href={`/work/${p.slug}`} target="_blank" className="text-xs text-[#8097ff]">View public project ↗</Link>}
+    </div>
     <div className="mt-5 grid gap-4 md:grid-cols-2">
      {["title","slug","client","role"].map(n=><label key={n}><span className="mb-2 block text-sm capitalize text-white/50">{n}</span><input name={n} defaultValue={p[n]??""} className={input}/></label>)}
      <label className="md:col-span-2"><span className="mb-2 block text-sm text-white/50">Short description</span><textarea name="shortDescription" defaultValue={p.short_description??""} rows={3} className={input}/></label>
      <label><span className="mb-2 block text-sm text-white/50">Year</span><input name="year" type="number" defaultValue={p.year??""} className={input}/></label>
      <label><span className="mb-2 block text-sm text-white/50">Status</span><select name="status" defaultValue={p.status} className="w-full rounded-xl border border-white/10 bg-[#11141c] px-4 py-3">{["in_development","live","shipped","prototype","experiment","concept","archived"].map(o=><option key={o} value={o}>{o.replaceAll("_"," ")}</option>)}</select></label>
-     <label><span className="mb-2 block text-sm text-white/50">Visibility</span><select name="visibility" defaultValue={p.visibility} className="w-full rounded-xl border border-white/10 bg-[#11141c] px-4 py-3"><option value="public">public</option><option value="private">private</option></select></label>
+     <label><span className="mb-2 block text-sm text-white/50">Visibility</span><select name="visibility" defaultValue={p.visibility} className="w-full rounded-xl border border-white/10 bg-[#11141c] px-4 py-3"><option value="public">Public — visible after publish</option><option value="private">Private — never shown publicly</option></select></label>
      <label><span className="mb-2 block text-sm text-white/50">Live URL</span><input name="liveUrl" type="url" defaultValue={p.live_url??""} className={input}/></label>
      <label><span className="mb-2 block text-sm text-white/50">GitHub URL</span><input name="githubUrl" type="url" defaultValue={p.github_url??""} className={input}/></label>
     </div>
-    <div className="mt-5 flex flex-wrap gap-5 text-sm text-white/55"><label><input name="featured" type="checkbox" defaultChecked={p.featured} className="mr-2"/>Featured</label><label><input name="confidential" type="checkbox" defaultChecked={p.confidential} className="mr-2"/>Confidential</label></div>
+    <div className="mt-5 flex flex-wrap gap-5 text-sm text-white/55">
+     <label className="rounded-xl border border-white/[.08] bg-white/[.025] px-3 py-2"><input name="featured" type="checkbox" defaultChecked={p.featured} className="mr-2"/>Show on homepage <span className="text-white/30">(Featured)</span></label>
+     <label className="rounded-xl border border-white/[.08] bg-white/[.025] px-3 py-2"><input name="confidential" type="checkbox" defaultChecked={p.confidential} className="mr-2"/>Confidential</label>
+    </div>
     <div className="mt-5 flex flex-wrap gap-2">{c?.map(x=><label key={x.id} className="rounded-full border border-white/10 px-3 py-2 text-sm text-white/50"><input name="categories" value={x.id} type="checkbox" defaultChecked={selected.has(x.id)} className="mr-2"/>{x.name}</label>)}</div>
    </section>
 
@@ -52,7 +65,10 @@ export default async function ProjectEditor({params}:{params:Promise<{id:string}
     </div>
    </section>
 
-   <div className="flex justify-end"><button className="rounded-xl border border-white/10 bg-white/[.04] px-5 py-3 text-sm font-medium">Save draft</button></div>
+   <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+    <button className="rounded-xl border border-white/10 bg-white/[.04] px-5 py-3 text-sm font-medium">Save draft</button>
+    <button formAction={publishProject} className="rounded-xl bg-white px-5 py-3 text-sm font-semibold text-black">Save & Publish</button>
+   </div>
   </form>
 
   <section className="mt-8 rounded-2xl border border-white/[.08] bg-white/[.02] p-6">
