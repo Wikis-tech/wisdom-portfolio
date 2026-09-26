@@ -15,7 +15,7 @@ jobs:
     timeout-minutes: 20
     env:
       NEXT_PUBLIC_SUPABASE_URL: https://mgzvfhrnrrvbmajkrmgp.supabase.co
-      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_A9wvzNg4bWz_DxhXDARjGQ_llAp9l-z
       NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3000
     steps:
       - name: Checkout
