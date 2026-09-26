@@ -3,11 +3,11 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "Wisdom — Wikis Tech",
+    default: "Okoh Wisdom — Wikis Tech",
     template: "%s | Wikis Tech",
   },
   description:
-    "Software developer, digital product builder and creative technologist.",
+    "Websites, digital products and intelligent tools built with software, design, AI and strategy.",
 };
 
 export default function RootLayout({
