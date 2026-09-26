@@ -21,7 +21,7 @@ export default async function ProjectPage({params}:{params:Promise<{slug:string}
   ["02","WHAT I BUILT",snap.solution],
   ["03","WHY IT MATTERED",snap.why_it_mattered],
   ["04","WHAT CHANGED",snap.outcome],
- ] as const;
+ ].filter((item):item is [string,string,string]=>typeof item[2]==="string"&&item[2].trim().length>0);
 
  return <main className="min-h-screen bg-[#06070b] text-white">
   <PublicNav/>
@@ -32,9 +32,9 @@ export default async function ProjectPage({params}:{params:Promise<{slug:string}
    {snap.confidential&&<p className="mt-8 rounded-2xl border border-white/10 bg-white/[.025] p-4 text-sm text-white/45">Selected interface information has been anonymised for confidentiality.</p>}
    <dl className="mt-10 grid gap-5 border-y border-white/[.08] py-6 sm:grid-cols-3">{snap.year&&<div><dt className="text-xs uppercase tracking-wider text-white/30">Year</dt><dd className="mt-2 text-sm">{snap.year}</dd></div>}{snap.client&&<div><dt className="text-xs uppercase tracking-wider text-white/30">Client</dt><dd className="mt-2 text-sm">{snap.client}</dd></div>}{snap.role&&<div><dt className="text-xs uppercase tracking-wider text-white/30">Role</dt><dd className="mt-2 text-sm">{snap.role}</dd></div>}</dl>
 
-   <section className="mt-16 overflow-hidden rounded-[28px] border border-white/[.08]">
+   {story.length>0&&<section className="mt-16 overflow-hidden rounded-[28px] border border-white/[.08]">
     {story.map(([number,label,content])=><div key={label} className="grid gap-4 border-b border-white/[.07] bg-white/[.018] p-6 last:border-b-0 sm:p-8 md:grid-cols-[150px_1fr]"><div><p className="text-xs font-semibold text-[#8097ff]">{number}</p><h2 className="mt-2 text-xs font-semibold tracking-[.16em] text-white/45">{label}</h2></div><p className="max-w-3xl whitespace-pre-wrap text-base leading-8 text-white/68">{content}</p></div>)}
-   </section>
+   </section>}
 
    {snap.blocks?.length?<section className="mt-16"><p className="text-xs font-semibold tracking-[.18em] text-white/30">DETAILS & PROCESS</p><div className="mt-8 space-y-12">{snap.blocks.map(b=>b.block_type==="heading"?<h2 key={b.id} className="text-3xl font-semibold tracking-[-.03em]">{b.data.content}</h2>:b.block_type==="spacer"?<div key={b.id} className="h-8"/>:<p key={b.id} className="max-w-3xl whitespace-pre-wrap text-base leading-8 text-white/55">{b.data.content}</p>)}</div></section>:null}
 
