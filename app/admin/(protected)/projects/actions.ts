@@ -50,6 +50,24 @@ function projectPayload(v:ReturnType<typeof projectSchema.parse>){
  };
 }
 
+async function persistProject(fd:FormData,userId:string,supabase:Awaited<ReturnType<typeof createClient>>){
+ const id=String(fd.get("id"));
+ const parsed=parsedProject(fd);
+ if(!parsed.success)throw new Error("Invalid project.");
+ const v=parsed.data;
+ const {error}=await supabase.from("projects").update({
+  ...projectPayload(v),updated_by:userId,updated_at:new Date().toISOString()
+ }).eq("id",id);
+ if(error)throw new Error("Could not save project.");
+ await supabase.from("project_category_links").delete().eq("project_id",id);
+ const categories=fd.getAll("categories").map(String);
+ if(categories.length){
+  const {error:categoryError}=await supabase.from("project_category_links").insert(categories.map(category_id=>({project_id:id,category_id})));
+  if(categoryError)throw new Error("Project saved, but categories could not be updated.");
+ }
+ return {id,v};
+}
+
 export async function createProject(fd:FormData){
  const user=await requireCmsUser();
  const parsed=parsedProject(fd);
@@ -68,18 +86,8 @@ export async function createProject(fd:FormData){
 
 export async function updateProject(fd:FormData){
  const user=await requireCmsUser();
- const id=String(fd.get("id"));
- const parsed=parsedProject(fd);
- if(!parsed.success)throw new Error("Invalid project.");
  const supabase=await createClient();
- const v=parsed.data;
- const {error}=await supabase.from("projects").update({
-  ...projectPayload(v),updated_by:user.id,updated_at:new Date().toISOString()
- }).eq("id",id);
- if(error)throw new Error("Could not save.");
- await supabase.from("project_category_links").delete().eq("project_id",id);
- const categories=fd.getAll("categories").map(String);
- if(categories.length)await supabase.from("project_category_links").insert(categories.map(category_id=>({project_id:id,category_id})));
+ const {id}=await persistProject(fd,user.id,supabase);
  await supabase.from("activity_logs").insert({user_id:user.id,action:"Project draft saved",entity_type:"project",entity_id:id});
  revalidatePath(`/admin/projects/${id}`);
  revalidatePath("/admin/projects");
@@ -106,8 +114,17 @@ export async function deleteBlock(fd:FormData){
 
 export async function publishProject(fd:FormData){
  const user=await requireCmsUser();
- const id=String(fd.get("id"));
  const supabase=await createClient();
+ let id=String(fd.get("id"));
+
+ // When Publish is pressed from the editor form, persist every visible edit first.
+ // This prevents a user from checking "Show on homepage" or changing copy and
+ // accidentally publishing the previous saved version.
+ if(fd.has("title")){
+  const saved=await persistProject(fd,user.id,supabase);
+  id=saved.id;
+ }
+
  const [{data:project},{data:blocks},{data:links}]=await Promise.all([
   supabase.from("projects").select("*").eq("id",id).single(),
   supabase.from("project_blocks").select("id,block_type,sort_order,data,is_visible").eq("project_id",id).order("sort_order"),
@@ -147,7 +164,7 @@ export async function publishProject(fd:FormData){
  }else{
   await supabase.from("project_publications").delete().eq("project_id",id);
  }
- await supabase.from("activity_logs").insert({user_id:user.id,action:"Project published",entity_type:"project",entity_id:id});
+ await supabase.from("activity_logs").insert({user_id:user.id,action:"Project published",entity_type:"project",entity_id:id,metadata:{featured:project.featured,visibility:project.visibility}});
  revalidatePath("/");
  revalidatePath("/work");
  revalidatePath(`/work/${project.slug}`);
