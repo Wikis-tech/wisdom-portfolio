@@ -11,8 +11,23 @@ export default async function sitemap():Promise<MetadataRoute.Sitemap>{
   s.from("experiments").select("slug,updated_at").eq("visibility","public").is("deleted_at",null)
  ]);
  const origin=siteOrigin(site);
- const staticRows=(pages??[]).map(x=>({url:`${origin}${x.route_path}`,lastModified:x.updated_at?new Date(x.updated_at):new Date(),changeFrequency:x.route_path==="/"?"weekly":"monthly" as const,priority:x.route_path==="/"?.9:.7}));
- const projectRows=(projects??[]).map(x=>({url:`${origin}/work/${x.slug}`,lastModified:x.updated_at?new Date(x.updated_at):new Date(),changeFrequency:"monthly" as const,priority:.8}));
- const experimentRows=(experiments??[]).map(x=>({url:`${origin}/lab/${x.slug}`,lastModified:x.updated_at?new Date(x.updated_at):new Date(),changeFrequency:"monthly" as const,priority:.6}));
+ const staticRows:MetadataRoute.Sitemap=(pages??[]).map(x=>({
+  url:`${origin}${x.route_path}`,
+  lastModified:x.updated_at?new Date(x.updated_at):new Date(),
+  changeFrequency:x.route_path==="home"?"weekly":"monthly",
+  priority:x.route_path==="/"?.9:.7,
+ }));
+ const projectRows:MetadataRoute.Sitemap=(projects??[]).map(x=>({
+  url:`${origin}/work/${x.slug}`,
+  lastModified:x.updated_at?new Date(x.updated_at):new Date(),
+  changeFrequency:"monthly",
+  priority:.8,
+ }));
+ const experimentRows:MetadataRoute.Sitemap=(experiments??[]).map(x=>({
+  url:`${origin}/lab/${x.slug}`,
+  lastModified:x.updated_at?new Date(x.updated_at):new Date(),
+  changeFrequency:"monthly",
+  priority:.6,
+ }));
  return [...staticRows,...projectRows,...experimentRows];
 }
