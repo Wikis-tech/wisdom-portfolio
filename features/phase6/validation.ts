@@ -11,7 +11,8 @@ export const experimentInput=z.object({
  technology:z.array(z.string().trim().min(1).max(60)).max(30),
  imageUrl:optionalHttps,videoUrl:optionalHttps,githubUrl:optionalHttps,demoUrl:optionalHttps,
  date:z.union([z.literal(""),z.string().regex(/^\d{4}-\d{2}-\d{2}$/)]),
- caseStudy:z.string().max(20000),sortOrder:z.number().int().min(-10000).max(10000),featured:z.boolean()
+ caseStudy:z.string().max(20000),sortOrder:z.number().int().min(-10000).max(10000),featured:z.boolean(),
+ seoTitle:z.string().trim().max(80),seoDescription:z.string().trim().max(320),seoImageUrl:optionalHttps,seoNoindex:z.boolean()
 });
 
 export const serviceInput=z.object({
