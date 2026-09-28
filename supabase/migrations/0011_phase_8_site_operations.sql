@@ -145,6 +145,23 @@ alter table public.experiments
   add column if not exists seo_image_url text,
   add column if not exists seo_noindex boolean not null default false;
 
+
+alter table public.projects
+  drop constraint if exists projects_seo_title_length,
+  add constraint projects_seo_title_length check (seo_title is null or char_length(seo_title) <= 80),
+  drop constraint if exists projects_seo_description_length,
+  add constraint projects_seo_description_length check (seo_description is null or char_length(seo_description) <= 320),
+  drop constraint if exists projects_seo_image_https,
+  add constraint projects_seo_image_https check (seo_image_url is null or seo_image_url ~ '^https://');
+
+alter table public.experiments
+  drop constraint if exists experiments_seo_title_length,
+  add constraint experiments_seo_title_length check (seo_title is null or char_length(seo_title) <= 80),
+  drop constraint if exists experiments_seo_description_length,
+  add constraint experiments_seo_description_length check (seo_description is null or char_length(seo_description) <= 320),
+  drop constraint if exists experiments_seo_image_https,
+  add constraint experiments_seo_image_https check (seo_image_url is null or seo_image_url ~ '^https://');
+
 insert into public.navigation_items(label,href,location,style,is_external,enabled,sort_order)
 values
  ('Work','/work','header','link',false,true,10),
