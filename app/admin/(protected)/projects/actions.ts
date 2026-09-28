@@ -25,7 +25,11 @@ function parsedProject(fd:FormData){
   featured:checked(fd,"featured"),
   confidential:checked(fd,"confidential"),
   liveUrl:String(fd.get("liveUrl")??""),
-  githubUrl:String(fd.get("githubUrl")??"")
+  githubUrl:String(fd.get("githubUrl")??""),
+  seoTitle:text(fd.get("seoTitle"))??undefined,
+  seoDescription:text(fd.get("seoDescription"))??undefined,
+  seoImageUrl:String(fd.get("seoImageUrl")??""),
+  seoNoindex:checked(fd,"seoNoindex")
  });
 }
 
@@ -46,7 +50,11 @@ function projectPayload(v:ReturnType<typeof projectSchema.parse>){
   featured:v.featured,
   confidential:v.confidential,
   live_url:v.liveUrl||null,
-  github_url:v.githubUrl||null
+  github_url:v.githubUrl||null,
+  seo_title:v.seoTitle??null,
+  seo_description:v.seoDescription??null,
+  seo_image_url:v.seoImageUrl||null,
+  seo_noindex:v.seoNoindex
  };
 }
 
@@ -150,6 +158,10 @@ export async function publishProject(fd:FormData){
   confidential:project.confidential,
   live_url:project.confidential?null:project.live_url,
   github_url:project.confidential?null:project.github_url,
+  seo_title:project.seo_title,
+  seo_description:project.seo_description,
+  seo_image_url:project.seo_image_url,
+  seo_noindex:project.seo_noindex,
   categories:links??[],
   blocks:(blocks??[]).filter(x=>x.is_visible)
  };
