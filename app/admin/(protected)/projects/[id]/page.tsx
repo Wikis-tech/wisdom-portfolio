@@ -65,6 +65,18 @@ export default async function ProjectEditor({params}:{params:Promise<{id:string}
     </div>
    </section>
 
+   <section className="rounded-2xl border border-white/[.08] bg-white/[.02] p-6">
+    <p className="text-xs font-semibold tracking-[.16em] text-[#8097ff]">SEO / SHARING</p>
+    <h2 className="mt-2 text-2xl font-semibold">Project metadata</h2>
+    <p className="mt-2 text-sm leading-6 text-white/40">Optional overrides. Leave blank to use the project title and short description.</p>
+    <div className="mt-5 grid gap-4 md:grid-cols-2">
+     <label><span className="mb-2 block text-sm text-white/50">SEO title</span><input name="seoTitle" defaultValue={p.seo_title??""} maxLength={80} className={input}/></label>
+     <label><span className="mb-2 block text-sm text-white/50">Social preview image URL</span><input name="seoImageUrl" type="url" defaultValue={p.seo_image_url??""} placeholder="https://…" className={input}/></label>
+     <label className="md:col-span-2"><span className="mb-2 block text-sm text-white/50">SEO description</span><textarea name="seoDescription" defaultValue={p.seo_description??""} rows={3} maxLength={320} className={input}/></label>
+     <label className="md:col-span-2 text-sm text-white/50"><input name="seoNoindex" type="checkbox" defaultChecked={p.seo_noindex} className="mr-2"/>Keep this project out of search engines</label>
+    </div>
+   </section>
+
    <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
     <button className="rounded-xl border border-white/10 bg-white/[.04] px-5 py-3 text-sm font-medium">Save draft</button>
     <button formAction={publishProject} className="rounded-xl bg-white px-5 py-3 text-sm font-semibold text-black">Save & Publish</button>
