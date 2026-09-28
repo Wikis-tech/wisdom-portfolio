@@ -2,13 +2,26 @@ import Link from "next/link";
 import {notFound} from "next/navigation";
 import {createClient} from "@/lib/supabase/server";
 import {PublicNav} from "@/components/portfolio/public-nav";
+import {PublicFooter} from "@/components/portfolio/public-footer";
+import {entityMetadata} from "@/lib/site/seo";
+import {getSiteSettings,siteOrigin} from "@/lib/site/content";
 
 type Snap={
  title:string;short_description?:string;problem?:string;solution?:string;why_it_mattered?:string;outcome?:string;
  year?:number;client?:string;role?:string;status:string;confidential:boolean;live_url?:string|null;github_url?:string|null;
+ seo_title?:string;seo_description?:string;seo_image_url?:string;seo_noindex?:boolean;
  categories?:Array<{project_categories?:{name?:string;slug?:string}|null}>;
  blocks?:Array<{id:string;block_type:string;data:{content?:string}}>
 };
+
+
+export async function generateMetadata({params}:{params:Promise<{slug:string}>}){
+ const {slug}=await params;const s=await createClient();
+ const [{data},site]=await Promise.all([s.from("project_publications").select("title,short_description,snapshot").eq("slug",slug).maybeSingle(),getSiteSettings()]);
+ if(!data)return {};
+ const snap=data.snapshot as unknown as Snap;
+ return entityMetadata({title:snap.seo_title||data.title,description:snap.seo_description||data.short_description||"Project case study by Okoh Wisdom.",path:`/work/${slug}`,image:snap.seo_image_url||null,noindex:snap.seo_noindex||false,siteName:site.brand_name,origin:siteOrigin(site)});
+}
 
 export default async function ProjectPage({params}:{params:Promise<{slug:string}>}){
  const {slug}=await params;
@@ -39,6 +52,6 @@ export default async function ProjectPage({params}:{params:Promise<{slug:string}
    {snap.blocks?.length?<section className="mt-16"><p className="text-xs font-semibold tracking-[.18em] text-white/30">DETAILS & PROCESS</p><div className="mt-8 space-y-12">{snap.blocks.map(b=>b.block_type==="heading"?<h2 key={b.id} className="text-3xl font-semibold tracking-[-.03em]">{b.data.content}</h2>:b.block_type==="spacer"?<div key={b.id} className="h-8"/>:<p key={b.id} className="max-w-3xl whitespace-pre-wrap text-base leading-8 text-white/55">{b.data.content}</p>)}</div></section>:null}
 
    <div className="mt-16 flex flex-wrap gap-3">{snap.live_url&&<Link href={snap.live_url} target="_blank" className="rounded-full bg-white px-5 py-3 text-sm font-semibold text-black">Visit Live Site ↗</Link>}{snap.github_url&&<Link href={snap.github_url} target="_blank" className="rounded-full border border-white/10 px-5 py-3 text-sm">GitHub ↗</Link>}<Link href="/work" className="rounded-full border border-white/10 px-5 py-3 text-sm text-white/65">Back to Work</Link></div>
-  </article>
+  </article><PublicFooter/>
  </main>
 }
