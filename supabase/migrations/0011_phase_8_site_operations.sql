@@ -57,6 +57,8 @@ create policy "navigation_cms_insert" on public.navigation_items for insert to a
 create policy "navigation_cms_update" on public.navigation_items for update to authenticated using ((select private.is_cms_user())) with check ((select private.is_cms_user()));
 create policy "navigation_cms_delete" on public.navigation_items for delete to authenticated using ((select private.is_cms_user()));
 create index if not exists navigation_location_order_idx on public.navigation_items(location, enabled, sort_order);
+create index if not exists navigation_created_by_idx on public.navigation_items(created_by);
+create index if not exists navigation_updated_by_idx on public.navigation_items(updated_by);
 
 create table if not exists public.social_links (
   id uuid primary key default gen_random_uuid(),
@@ -82,6 +84,8 @@ create policy "social_cms_insert" on public.social_links for insert to authentic
 create policy "social_cms_update" on public.social_links for update to authenticated using ((select private.is_cms_user())) with check ((select private.is_cms_user()));
 create policy "social_cms_delete" on public.social_links for delete to authenticated using ((select private.is_cms_user()));
 create index if not exists social_enabled_order_idx on public.social_links(enabled, sort_order);
+create index if not exists social_created_by_idx on public.social_links(created_by);
+create index if not exists social_updated_by_idx on public.social_links(updated_by);
 
 create table if not exists public.seo_settings (
   id uuid primary key default gen_random_uuid(),
@@ -106,6 +110,8 @@ create policy "seo_cms_select" on public.seo_settings for select to authenticate
 create policy "seo_cms_insert" on public.seo_settings for insert to authenticated with check ((select private.is_cms_user()));
 create policy "seo_cms_update" on public.seo_settings for update to authenticated using ((select private.is_cms_user())) with check ((select private.is_cms_user()));
 create policy "seo_cms_delete" on public.seo_settings for delete to authenticated using ((select private.is_cms_user()));
+create index if not exists seo_created_by_idx on public.seo_settings(created_by);
+create index if not exists seo_updated_by_idx on public.seo_settings(updated_by);
 
 create table if not exists public.analytics_settings (
   id uuid primary key default gen_random_uuid(),
