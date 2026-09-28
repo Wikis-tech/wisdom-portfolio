@@ -14,7 +14,7 @@ export default async function sitemap():Promise<MetadataRoute.Sitemap>{
  const staticRows:MetadataRoute.Sitemap=(pages??[]).map(x=>({
   url:`${origin}${x.route_path}`,
   lastModified:x.updated_at?new Date(x.updated_at):new Date(),
-  changeFrequency:x.route_path==="home"?"weekly":"monthly",
+  changeFrequency:x.route_path==="/"?"weekly":"monthly",
   priority:x.route_path==="/"?.9:.7,
  }));
  const projectRows:MetadataRoute.Sitemap=(projects??[]).map(x=>({
