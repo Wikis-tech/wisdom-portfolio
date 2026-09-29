@@ -4,6 +4,7 @@ import "./globals.css";
 import {AnalyticsBridge} from "@/components/analytics/analytics-bridge";
 import {getAnalyticsSettings,getSiteSettings,siteOrigin} from "@/lib/site/content";
 import {MotionController} from "@/components/portfolio/motion-controller";
+import {GlobalLoadingIndicator} from "@/components/loading/global-loading-indicator";
 
 export async function generateMetadata():Promise<Metadata>{
  const site=await getSiteSettings();
@@ -29,6 +30,7 @@ export default async function RootLayout({children}:Readonly<{children:React.Rea
  return <html lang="en" suppressHydrationWarning><body>
   <Script id="wikis-theme-init" strategy="beforeInteractive">{`try{var t=localStorage.getItem('wikis-portfolio-theme');if(t!=='light'&&t!=='dark')t='dark';document.documentElement.dataset.theme=t;document.documentElement.style.colorScheme=t}catch(e){document.documentElement.dataset.theme='dark'}`}</Script>
   <MotionController/>
+  <GlobalLoadingIndicator/>
   {children}
   {ga?<><Script src={`https://www.googletagmanager.com/gtag/js?id=${ga}`} strategy="afterInteractive"/><Script id="wikis-tech-ga" strategy="afterInteractive">{`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}window.gtag=gtag;gtag('js',new Date());gtag('config','${ga}',{anonymize_ip:true});`}</Script></>:null}
   <AnalyticsBridge settings={analytics}/>
