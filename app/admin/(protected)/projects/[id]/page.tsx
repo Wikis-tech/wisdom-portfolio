@@ -39,7 +39,7 @@ export default async function ProjectEditor({params}:{params:Promise<{id:string}
    <input type="hidden" name="id" value={id}/>
    <section className="rounded-2xl border border-white/[.08] bg-white/[.02] p-6">
     <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-end">
-     <div><h2 className="text-lg font-semibold">Project basics</h2><p className="mt-1 text-xs leading-5 text-white/35">Public + published = appears on Work. Turn on “Show on homepage” to include it in Selected Work.</p></div>
+     <div><h2 className="text-lg font-semibold">Project basics</h2><p className="mt-1 text-xs leading-5 text-white/35">Public + published = appears on Work and can appear in homepage Selected Work. Featured projects are pinned first. Private projects never appear publicly.</p></div>
      {p.content_state==="published"&&p.visibility==="public"&&<Link href={`/work/${p.slug}`} target="_blank" className="text-xs text-[#8097ff]">View public project ↗</Link>}
     </div>
     <div className="mt-5 grid gap-4 md:grid-cols-2">
@@ -51,8 +51,8 @@ export default async function ProjectEditor({params}:{params:Promise<{id:string}
      <label><span className="mb-2 block text-sm text-white/50">Live URL</span><input name="liveUrl" type="url" defaultValue={p.live_url??""} className={input}/></label>
      <label><span className="mb-2 block text-sm text-white/50">GitHub URL</span><input name="githubUrl" type="url" defaultValue={p.github_url??""} className={input}/></label>
     </div>
-    <div className="mt-5 flex flex-wrap gap-5 text-sm text-white/55">
-     <label className="rounded-xl border border-white/[.08] bg-white/[.025] px-3 py-2"><input name="featured" type="checkbox" defaultChecked={p.featured} className="mr-2"/>Show on homepage <span className="text-white/30">(Featured)</span></label>
+    {p.visibility==="private"&&<div className="mt-5 rounded-xl border border-amber-300/20 bg-amber-300/[.05] px-4 py-3 text-xs leading-5 text-amber-100/70">This project is currently Private. Save & Publish will preserve it in the CMS, but it will not appear on the public website until Visibility is changed to Public.</div>}<div className="mt-5 flex flex-wrap gap-5 text-sm text-white/55">
+     <label className="rounded-xl border border-white/[.08] bg-white/[.025] px-3 py-2"><input name="featured" type="checkbox" defaultChecked={p.featured} className="mr-2"/>Pin on homepage <span className="text-white/30">(Featured)</span></label>
      <label className="rounded-xl border border-white/[.08] bg-white/[.025] px-3 py-2"><input name="confidential" type="checkbox" defaultChecked={p.confidential} className="mr-2"/>Confidential</label>
     </div>
     <div className="mt-5 flex flex-wrap gap-2">{c?.map(x=><label key={x.id} className="rounded-full border border-white/10 px-3 py-2 text-sm text-white/50"><input name="categories" value={x.id} type="checkbox" defaultChecked={selected.has(x.id)} className="mr-2"/>{x.name}</label>)}</div>
