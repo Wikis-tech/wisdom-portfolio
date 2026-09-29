@@ -3,6 +3,7 @@ import Script from "next/script";
 import "./globals.css";
 import {AnalyticsBridge} from "@/components/analytics/analytics-bridge";
 import {getAnalyticsSettings,getSiteSettings,siteOrigin} from "@/lib/site/content";
+import {MotionController} from "@/components/portfolio/motion-controller";
 
 export async function generateMetadata():Promise<Metadata>{
  const site=await getSiteSettings();
@@ -26,6 +27,7 @@ export default async function RootLayout({children}:Readonly<{children:React.Rea
  const analytics=await getAnalyticsSettings();
  const ga=analytics.enabled&&analytics.provider==="google_analytics"&&analytics.measurement_id?analytics.measurement_id:null;
  return <html lang="en"><body>
+  <MotionController/>
   {children}
   {ga?<><Script src={`https://www.googletagmanager.com/gtag/js?id=${ga}`} strategy="afterInteractive"/><Script id="wikis-tech-ga" strategy="afterInteractive">{`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}window.gtag=gtag;gtag('js',new Date());gtag('config','${ga}',{anonymize_ip:true});`}</Script></>:null}
   <AnalyticsBridge settings={analytics}/>
