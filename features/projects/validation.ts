@@ -4,7 +4,10 @@ const optionalText=(max:number)=>z.string().trim().max(max).optional();
 
 export const projectSchema=z.object({
  title:z.string().trim().min(2).max(120),
- slug:z.string().trim().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).max(140),
+ slug:z.preprocess(
+  value=>String(value??"").trim().toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,""),
+  z.string().min(1,"Enter a slug.").max(140).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/,"Use letters, numbers and hyphens.")
+ ),
  shortDescription:optionalText(500),
  problem:optionalText(4000),
  solution:optionalText(4000),
