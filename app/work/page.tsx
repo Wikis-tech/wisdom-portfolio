@@ -32,7 +32,7 @@ export default async function WorkPage(){
 
  return <main className="min-h-screen bg-[#050812] text-white">
   <PublicNav/>
-  <section className="mx-auto w-[min(1360px,calc(100%-32px))] py-14 sm:w-[min(1360px,calc(100%-40px))] sm:py-20">
+  <section data-reveal="up" className="mx-auto w-[min(1360px,calc(100%-32px))] py-14 sm:w-[min(1360px,calc(100%-40px))] sm:py-20">
    <p className="text-xs font-semibold tracking-[.18em] text-[#6f8cff]">SELECTED WORK</p>
    <div className="mt-5 grid gap-8 lg:grid-cols-[1.25fr_.75fr] lg:items-end">
     <h1 className="max-w-5xl text-[clamp(3rem,8vw,7rem)] font-semibold leading-[.88] tracking-[-.065em]">Different work deserves a different stage.</h1>
@@ -44,12 +44,12 @@ export default async function WorkPage(){
   <ProjectSection title="Research, strategy & presentations" kicker="THINK" items={strategy} compact empty="Business research, presentation and branding projects will appear here."/>
   {other.length?<ProjectSection title="More selected work" kicker="MORE" items={other} compact/>:null}
 
-  <section className="mx-auto w-[min(1360px,calc(100%-32px))] py-20 sm:w-[min(1360px,calc(100%-40px))] sm:py-24">
+  <section data-reveal="up" className="mx-auto w-[min(1360px,calc(100%-32px))] py-20 sm:w-[min(1360px,calc(100%-40px))] sm:py-24">
    <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
     <div><p className="text-xs font-semibold tracking-[.18em] text-[#6f8cff]">DESIGN / VISUAL WORK</p><h2 className="mt-4 max-w-4xl text-4xl font-semibold tracking-[-.05em] sm:text-6xl">A Pinterest-like wall for the work that should be seen, not over-explained.</h2></div>
     <Link href="/archive" className="text-sm text-white/45 transition hover:text-white">Open full archive ↗</Link>
    </div>
-   {designs?.length?<div className="mt-10 columns-1 gap-4 sm:columns-2 lg:columns-3">{designs.slice(0,12).map(d=><article key={d.id} className="masonry-card mb-4 break-inside-avoid overflow-hidden rounded-[22px] border border-white/[.08] bg-[#081024]/70">
+   {designs?.length?<div className="mt-10 columns-1 gap-4 sm:columns-2 lg:columns-3">{designs.slice(0,12).map((d,i)=><article key={d.id} data-reveal="scale" data-delay={Math.min(i*55,330)} className="masonry-card mb-4 break-inside-avoid overflow-hidden rounded-[22px] border border-white/[.08] bg-[#081024]/70">
     <div className="relative overflow-hidden bg-[#0a1530]"><div className="min-h-72 w-full bg-cover bg-center transition duration-700 ease-out group-hover:scale-[1.03]" style={{backgroundImage:`url("${d.image_url}")`,aspectRatio:"4 / 5"}}/></div>
     <div className="p-4"><p className="text-[10px] uppercase tracking-[.16em] text-[#7890ff]">{(d.design_categories as {name?:string}|null)?.name||"Design"}{d.year?` · ${d.year}`:""}</p><h3 className="mt-2 text-lg font-semibold">{d.title}</h3><p className="mt-1 text-sm text-white/35">{d.client}</p>{d.description&&<p className="mt-3 text-sm leading-6 text-white/42">{d.description}</p>}</div>
    </article>)}</div>:<Empty text="Publish design work from the Design Archive CMS to build this visual wall."/>}
@@ -59,9 +59,9 @@ export default async function WorkPage(){
 }
 
 function ProjectSection({title,kicker,items,compact=false,empty}:{title:string;kicker:string;items:ProjectItem[];compact?:boolean;empty?:string}){
- return <section className="mx-auto w-[min(1360px,calc(100%-32px))] py-16 sm:w-[min(1360px,calc(100%-40px))] sm:py-20">
+ return <section data-reveal="up" className="mx-auto w-[min(1360px,calc(100%-32px))] py-16 sm:w-[min(1360px,calc(100%-40px))] sm:py-20">
   <p className="text-xs font-semibold tracking-[.18em] text-[#6f8cff]">{kicker}</p><h2 className="mt-4 max-w-4xl text-4xl font-semibold tracking-[-.05em] sm:text-6xl">{title}</h2>
-  {items.length?<div className={`mt-10 grid gap-6 ${compact?"md:grid-cols-2":"lg:grid-cols-2"}`}>{items.map((p,i)=>{const snap=(p.snapshot??{}) as Snap;const href=previewHref(snap,p.slug);const external=Boolean(snap.live_url);return <article key={p.project_id} className="portfolio-card group overflow-hidden rounded-[28px] border border-white/[.08] bg-[linear-gradient(145deg,rgba(10,24,57,.88),rgba(7,9,16,.96))]">
+  {items.length?<div className={`mt-10 grid gap-6 ${compact?"md:grid-cols-2":"lg:grid-cols-2"}`}>{items.map((p,i)=>{const snap=(p.snapshot??{}) as Snap;const href=previewHref(snap,p.slug);const external=Boolean(snap.live_url);return <article key={p.project_id} data-reveal="up" data-delay={Math.min(i*90,360)} className="portfolio-card group overflow-hidden rounded-[28px] border border-white/[.08] bg-[linear-gradient(145deg,rgba(10,24,57,.88),rgba(7,9,16,.96))]">
    <a href={href} target={external?"_blank":undefined} rel={external?"noreferrer":undefined} className="block overflow-hidden" aria-label={external?`Open live ${p.title}`:`Open ${p.title} case study`}>
     <div className={`relative overflow-hidden border-b border-white/[.07] bg-[#081024] ${compact?"aspect-[16/8]":"aspect-[16/10]"}`}>
      {snap.card_media_url?<div className="h-full w-full bg-cover bg-center transition duration-700 ease-out group-hover:scale-[1.025]" style={{backgroundImage:`url("${snap.card_media_url}")`}}/>:<div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(40,103,232,.24),transparent_35%),linear-gradient(145deg,#0a1a3c,#070910)]"/>}
