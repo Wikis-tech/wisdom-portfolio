@@ -30,7 +30,7 @@ export default async function WorkPage(){
  const used=new Set([...digital,...strategy].map(x=>x.project_id));
  const other=(projects??[]).filter(p=>!used.has(p.project_id));
 
- return <main className="min-h-screen bg-[#050812] text-white">
+ return <main className="public-page min-h-screen bg-[#050812] text-white">
   <PublicNav/>
   <section data-reveal="up" className="mx-auto w-[min(1360px,calc(100%-32px))] py-14 sm:w-[min(1360px,calc(100%-40px))] sm:py-20">
    <p className="text-xs font-semibold tracking-[.18em] text-[#6f8cff]">SELECTED WORK</p>
