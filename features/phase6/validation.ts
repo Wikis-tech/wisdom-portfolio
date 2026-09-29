@@ -1,6 +1,9 @@
 import {z} from "zod";
 
-const slug=z.string().trim().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).max(120);
+const slug=z.preprocess(
+  value=>String(value??"").trim().toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,""),
+  z.string().min(1,"Enter a slug.").max(120).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/,"Use letters, numbers and hyphens.")
+);
 const internalOrHttps=z.string().trim().refine(v=>v.startsWith("/")||/^https:\/\//i.test(v),"Use an internal path or HTTPS URL.");
 const optionalHttps=z.union([z.literal(""),z.string().url().refine(v=>v.startsWith("https://"),"HTTPS required.")]);
 
