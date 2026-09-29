@@ -1,7 +1,11 @@
 import Link from "next/link";
+import {PublicFooter} from "@/components/portfolio/public-footer";
 import {PublicNav} from "@/components/portfolio/public-nav";
 import {QuoteForm} from "@/components/forms/quote-form";
+import {getPageMetadata} from "@/lib/site/seo";
 
+
+export async function generateMetadata(){return getPageMetadata("quote",{"title":"Request a Quote — Okoh Wisdom","description":"Share your project scope, goals, timeline and optional budget to request a project estimate.","path":"/quote","noindex":true});}
 export default function QuotePage(){
   return (
     <main className="min-h-screen bg-[#06070b] text-white">
@@ -18,6 +22,6 @@ export default function QuotePage(){
           <QuoteForm/>
         </div>
       </section>
-    </main>
+    <PublicFooter/></main>
   );
 }

@@ -1,9 +1,10 @@
-name: Phase 1-7 Quality Gate
+name: Phase 1-8 Quality Gate
 
 on:
   push:
     branches:
       - phase/07-leads-contact
+      - phase/08-site-ops
   workflow_dispatch:
 
 permissions:
@@ -45,7 +46,7 @@ jobs:
       - name: Public route smoke test
         run: |
           set -e
-          for path in / /work /about /archive /lab /services /pricing /contact /quote /admin/login; do
+          for path in / /work /about /archive /lab /services /pricing /contact /quote /sitemap.xml /robots.txt /admin/login; do
             code=$(curl -sS -o /tmp/response -w "%{http_code}" "http://127.0.0.1:3000$path")
             echo "$path -> $code"
             test "$code" -ge 200

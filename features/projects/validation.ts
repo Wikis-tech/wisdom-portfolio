@@ -21,7 +21,11 @@ export const projectSchema=z.object({
  featured:z.boolean(),
  confidential:z.boolean(),
  liveUrl:z.union([z.string().url(),z.literal("")]).optional(),
- githubUrl:z.union([z.string().url(),z.literal("")]).optional()
+ githubUrl:z.union([z.string().url(),z.literal("")]).optional(),
+ seoTitle:optionalText(80),
+ seoDescription:optionalText(320),
+ seoImageUrl:z.union([z.string().url().refine(v=>v.startsWith("https://")),z.literal("")]).optional(),
+ seoNoindex:z.boolean()
 });
 
 export const blockSchema=z.object({
