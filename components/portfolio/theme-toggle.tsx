@@ -19,6 +19,7 @@ export function ThemeToggle(){
  return <button
   type="button"
   onClick={toggle}
+  data-no-loading
   className="theme-toggle group inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[.035] transition duration-300 hover:-translate-y-0.5"
   aria-label="Toggle light and dark mode"
   title="Toggle light and dark mode"
