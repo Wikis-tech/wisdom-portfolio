@@ -61,7 +61,7 @@ export default async function HomePage(){
   contact_cta:<section data-reveal="scale" className="mx-auto w-[min(1320px,calc(100%-32px))] py-24 sm:w-[min(1320px,calc(100%-40px))] sm:py-28"><div className="rounded-[30px] border border-white/[.08] bg-[radial-gradient(circle_at_80%_20%,rgba(40,103,232,.14),transparent_35%),rgba(255,255,255,.025)] p-7 sm:rounded-[36px] sm:p-12"><p className="text-xs font-semibold tracking-[.18em] text-[#6f8cff]">HAVE A PROBLEM WORTH SOLVING?</p><h2 className="mt-5 max-w-4xl text-5xl font-semibold tracking-[-.05em] sm:text-7xl">Let’s turn it into something useful.</h2><p className="mt-6 max-w-2xl text-base leading-7 text-white/45">Tell me what is not working, who it affects and what a better outcome should look like. We can work backward from there.</p><Link href="/contact" className="mt-8 inline-flex min-h-12 items-center justify-center rounded-full bg-white px-5 py-3 text-sm font-semibold text-[#06070b]">Start a conversation ↗</Link></div></section>
  };
 
- return <main className="min-h-screen overflow-hidden bg-[#06070b] text-white"><PublicNav/>{sections?.map(sec=><Fragment key={sec.id}>{block[sec.section_key]??null}</Fragment>)}<PublicFooter/></main>
+ return <main className="public-page min-h-screen overflow-hidden bg-[#06070b] text-white"><PublicNav/>{sections?.map(sec=><Fragment key={sec.id}>{block[sec.section_key]??null}</Fragment>)}<PublicFooter/></main>
 }
 
 function Empty({text}:{text:string}){return <div className="mt-10 rounded-3xl border border-dashed border-white/10 p-8 text-center text-sm text-white/35 sm:p-10">{text}</div>}
