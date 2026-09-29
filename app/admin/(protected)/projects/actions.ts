@@ -7,6 +7,8 @@ import {blockSchema,projectSchema} from "@/features/projects/validation";
 
 const checked=(fd:FormData,key:string)=>fd.get(key)==="on";
 const text=(v:FormDataEntryValue|null)=>{const s=String(v??"").trim();return s||null};
+const projectImages=["image/jpeg","image/png","image/webp","image/avif"];
+function safeMediaName(name:string){const parts=name.toLowerCase().split(".");const ext=parts.length>1?parts.pop()!.replace(/[^a-z0-9]/g,""):"jpg";const base=parts.join(".").replace(/[^a-z0-9-_]+/g,"-").replace(/^-+|-+$/g,"").slice(0,70)||"project";return `${base}.${ext}`}
 
 function parsedProject(fd:FormData){
  return projectSchema.safeParse({
@@ -139,6 +141,15 @@ export async function publishProject(fd:FormData){
   supabase.from("project_category_links").select("category_id,project_categories(name,slug)").eq("project_id",id)
  ]);
  if(!project)throw new Error("Project not found.");
+ let cardMediaUrl:string|null=null;
+ let heroMediaUrl:string|null=null;
+ if(project.card_media_id||project.hero_media_id){
+  const ids=[project.card_media_id,project.hero_media_id].filter(Boolean);
+  const {data:mediaRows}=await supabase.from("media_library").select("id,storage_bucket,storage_path").in("id",ids);
+  const urlFor=(id:string|null)=>{const row=mediaRows?.find(m=>m.id===id);return row?supabase.storage.from(row.storage_bucket).getPublicUrl(row.storage_path).data.publicUrl:null};
+  cardMediaUrl=urlFor(project.card_media_id);
+  heroMediaUrl=urlFor(project.hero_media_id);
+ }
  if(project.visibility==="public"){
   const missing=[["problem",project.problem],["what I built",project.solution],["why it mattered",project.why_it_mattered],["what changed",project.outcome]].filter(([,value])=>!String(value??"").trim()).map(([label])=>label);
   if(missing.length)throw new Error(`Complete the case study before publishing: ${missing.join(", ")}.`);
@@ -158,6 +169,8 @@ export async function publishProject(fd:FormData){
   confidential:project.confidential,
   live_url:project.confidential?null:project.live_url,
   github_url:project.confidential?null:project.github_url,
+  card_media_url:cardMediaUrl,
+  hero_media_url:heroMediaUrl,
   seo_title:project.seo_title,
   seo_description:project.seo_description,
   seo_image_url:project.seo_image_url,
@@ -193,4 +206,30 @@ export async function moveProjectToTrash(fd:FormData){
  revalidatePath("/");
  revalidatePath("/work");
  redirect("/admin/projects");
+}
+
+
+export async function uploadProjectMedia(fd:FormData){
+ const user=await requireCmsUser();
+ const projectId=String(fd.get("projectId"));
+ const kind=String(fd.get("kind"));
+ const file=fd.get("file");
+ if(!["card","hero"].includes(kind))throw new Error("Unknown project image type.");
+ if(!(file instanceof File)||file.size<=0)throw new Error("Choose an image to upload.");
+ if(!projectImages.includes(file.type))throw new Error("Use PNG, JPG, WebP or AVIF.");
+ if(file.size>8*1024*1024)throw new Error("Project images must be 8 MB or smaller.");
+ const s=await createClient();
+ const path=`projects/${projectId}/${kind}/${crypto.randomUUID()}-${safeMediaName(file.name)}`;
+ const {error:uploadError}=await s.storage.from("portfolio-public").upload(path,file,{contentType:file.type,upsert:false});
+ if(uploadError)throw new Error("Could not upload project image.");
+ const {data:media,error:mediaError}=await s.from("media_library").insert({
+  storage_bucket:"portfolio-public",storage_path:path,original_name:file.name,display_name:file.name,mime_type:file.type,byte_size:file.size,
+  alt_text:kind==="card"?"Project preview image":"Project hero image",category:"Projects",visibility:"public",created_by:user.id
+ }).select("id").single();
+ if(mediaError){await s.storage.from("portfolio-public").remove([path]);throw new Error("Project media record could not be saved.");}
+ const column=kind==="card"?"card_media_id":"hero_media_id";
+ const {error:updateError}=await s.from("projects").update({[column]:media.id,updated_by:user.id,updated_at:new Date().toISOString()}).eq("id",projectId);
+ if(updateError)throw new Error("The image uploaded but could not be attached to the project.");
+ await s.from("activity_logs").insert({user_id:user.id,action:kind==="card"?"Project preview image updated":"Project hero image updated",entity_type:"project",entity_id:projectId});
+ revalidatePath(`/admin/projects/${projectId}`);
 }
