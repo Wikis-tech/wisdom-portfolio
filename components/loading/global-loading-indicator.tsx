@@ -10,12 +10,11 @@ function isModifiedClick(event:MouseEvent){
 export function GlobalLoadingIndicator(){
  const pathname=usePathname();
  const [active,setActive]=useState(false);
- const [admin,setAdmin]=useState(false);
+ const admin=pathname.startsWith("/admin");
  const timer=useRef<ReturnType<typeof setTimeout>|null>(null);
  const startedAt=useRef(0);
 
  useEffect(()=>{
-  setAdmin(pathname.startsWith("/admin"));
   const elapsed=Date.now()-startedAt.current;
   const wait=Math.max(0,260-elapsed);
   const id=setTimeout(()=>setActive(false),wait);
