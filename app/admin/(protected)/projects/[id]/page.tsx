@@ -1,7 +1,7 @@
 import Link from "next/link";
 import {notFound} from "next/navigation";
 import {createClient} from "@/lib/supabase/server";
-import {addBlock,deleteBlock,moveProjectToTrash,publishProject,updateProject} from "../actions";
+import {addBlock,deleteBlock,moveProjectToTrash,publishProject,updateProject,uploadProjectMedia} from "../actions";
 
 const input="w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3 outline-none transition focus:border-[#5f78ff]/60";
 
@@ -16,6 +16,11 @@ export default async function ProjectEditor({params}:{params:Promise<{id:string}
  ]);
  if(!p)notFound();
  const selected=new Set((l??[]).map(x=>x.category_id));
+ const mediaIds=[p.card_media_id,p.hero_media_id].filter(Boolean);
+ const {data:mediaRows}=mediaIds.length?await s.from("media_library").select("id,storage_bucket,storage_path").in("id",mediaIds):{data:[]};
+ const mediaUrl=(mediaId:string|null)=>{const row=mediaRows?.find(x=>x.id===mediaId);return row?s.storage.from(row.storage_bucket).getPublicUrl(row.storage_path).data.publicUrl:null};
+ const cardUrl=mediaUrl(p.card_media_id);
+ const heroUrl=mediaUrl(p.hero_media_id);
 
  return <main className="mx-auto max-w-5xl">
   <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
@@ -51,6 +56,16 @@ export default async function ProjectEditor({params}:{params:Promise<{id:string}
      <label className="rounded-xl border border-white/[.08] bg-white/[.025] px-3 py-2"><input name="confidential" type="checkbox" defaultChecked={p.confidential} className="mr-2"/>Confidential</label>
     </div>
     <div className="mt-5 flex flex-wrap gap-2">{c?.map(x=><label key={x.id} className="rounded-full border border-white/10 px-3 py-2 text-sm text-white/50"><input name="categories" value={x.id} type="checkbox" defaultChecked={selected.has(x.id)} className="mr-2"/>{x.name}</label>)}</div>
+   </section>
+
+   <section className="rounded-2xl border border-[#183a7a]/45 bg-[linear-gradient(145deg,rgba(13,31,72,.22),rgba(255,255,255,.015))] p-6">
+    <p className="text-xs font-semibold tracking-[.16em] text-[#7d95ff]">VISUAL PRESENTATION</p>
+    <h2 className="mt-2 text-2xl font-semibold">How this work appears publicly</h2>
+    <p className="mt-2 max-w-3xl text-sm leading-6 text-white/40">Upload a preview image for Work cards and an optional hero image for the case-study page. Web/software projects look best with a clean desktop or product screenshot.</p>
+    <div className="mt-6 grid gap-4 lg:grid-cols-2">
+     <form action={uploadProjectMedia} className="rounded-2xl border border-white/[.08] bg-black/20 p-4"><input type="hidden" name="projectId" value={id}/><input type="hidden" name="kind" value="card"/><div className="aspect-[16/10] overflow-hidden rounded-xl border border-dashed border-white/10 bg-[#081024]">{cardUrl?<div role="img" aria-label="Current project preview" className="h-full w-full bg-cover bg-center" style={{backgroundImage:`url("${cardUrl}")`}}/>:<div className="flex h-full items-center justify-center text-center"><div><p className="text-sm font-medium text-white/55">Project preview image</p><p className="mt-1 text-xs text-white/25">Shown on Work cards</p></div></div>}</div><input name="file" type="file" accept="image/png,image/jpeg,image/webp,image/avif" required className="mt-4 block w-full text-xs text-white/45 file:mr-3 file:rounded-lg file:border-0 file:bg-white file:px-3 file:py-2 file:text-xs file:font-semibold file:text-black"/><button className="mt-3 w-full rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-black">Update preview image</button></form>
+     <form action={uploadProjectMedia} className="rounded-2xl border border-white/[.08] bg-black/20 p-4"><input type="hidden" name="projectId" value={id}/><input type="hidden" name="kind" value="hero"/><div className="aspect-[16/10] overflow-hidden rounded-xl border border-dashed border-white/10 bg-[#081024]">{heroUrl?<div role="img" aria-label="Current project hero" className="h-full w-full bg-cover bg-center" style={{backgroundImage:`url("${heroUrl}")`}}/>:<div className="flex h-full items-center justify-center text-center"><div><p className="text-sm font-medium text-white/55">Case-study hero image</p><p className="mt-1 text-xs text-white/25">Optional large visual</p></div></div>}</div><input name="file" type="file" accept="image/png,image/jpeg,image/webp,image/avif" required className="mt-4 block w-full text-xs text-white/45 file:mr-3 file:rounded-lg file:border-0 file:bg-white file:px-3 file:py-2 file:text-xs file:font-semibold file:text-black"/><button className="mt-3 w-full rounded-xl border border-white/10 px-4 py-2.5 text-sm font-medium">Update hero image</button></form>
+    </div>
    </section>
 
    <section className="rounded-2xl border border-[#536dfe]/20 bg-[#536dfe]/[.035] p-6">
