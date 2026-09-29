@@ -36,7 +36,7 @@ export default async function ProjectPage({params}:{params:Promise<{slug:string}
   ["04","WHAT CHANGED",snap.outcome],
  ].filter((item):item is [string,string,string]=>typeof item[2]==="string"&&item[2].trim().length>0);
 
- return <main className="min-h-screen bg-[#06070b] text-white">
+ return <main className="public-page min-h-screen bg-[#06070b] text-white">
   <PublicNav/>
   <article className="mx-auto w-[min(1120px,calc(100%-32px))] py-12 sm:w-[min(1120px,calc(100%-40px))] sm:py-16">
    <p className="text-xs font-semibold uppercase tracking-[.18em] text-[#6f8cff]">{snap.status.replaceAll("_"," ")}</p>
