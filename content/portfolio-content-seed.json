@@ -1,0 +1,153 @@
+{
+  "identity": {
+    "name": "Okoh Wisdom Uchechukwu",
+    "brand": "Wikis Tech Corporation",
+    "tagline": "Software Developer · Digital Product Builder · Creative Technologist",
+    "location": "Lagos, Nigeria",
+    "email": "wikistech07@gmail.com",
+    "footer": "CODE × DESIGN × AI × STRATEGY"
+  },
+  "about": {
+    "headline": "More than one discipline. One way of thinking.",
+    "introduction": "I'm Wisdom, a Computer Science undergraduate, software developer and creative technologist interested in what happens when engineering, design, AI and business thinking work together.",
+    "philosophy": "I care about usefulness before decoration. The strongest work should answer four questions clearly: what was the problem, what did I build, why did it matter, and what changed?"
+  },
+  "education": [
+    {
+      "institution": "University of Africa Toru-Orua",
+      "program": "Computer Science",
+      "qualification": "B.Sc. (in view)",
+      "location": "Bayelsa State, Nigeria",
+      "current": true
+    }
+  ],
+  "experience": [
+    {
+      "company": "SCM Capital Limited",
+      "position": "IT, Product & Creative Support",
+      "type": "SIWES / Internship",
+      "start": "2026-04-27",
+      "current": true
+    },
+    {
+      "company": "Wikis Tech Corporation",
+      "position": "Software Developer & Digital Product Builder",
+      "type": "Independent / Personal Brand",
+      "current": true
+    }
+  ],
+  "projects": [
+    {
+      "slug": "campuslink",
+      "title": "Campus Link",
+      "visibility": "public",
+      "published": true
+    },
+    {
+      "slug": "wisdom-portfolio",
+      "title": "Wisdom Portfolio",
+      "visibility": "public",
+      "published": true
+    },
+    {
+      "slug": "spip",
+      "title": "SPIP — SCM Prospect Intelligence Platform",
+      "visibility": "private",
+      "published": false
+    },
+    {
+      "slug": "scm-capital-creative",
+      "title": "SCM Capital Creative & Financial Communications",
+      "visibility": "private",
+      "published": false
+    },
+    {
+      "slug": "edusplit-school-pitch",
+      "title": "Edusplit School Partnership Pitch",
+      "visibility": "private",
+      "published": false
+    }
+  ],
+  "lab": [
+    "Campus Link UI V3 Experiment",
+    "CRAFT Prompt Framework",
+    "Portfolio Motion & Theme System"
+  ],
+  "services": [
+    "Web Development",
+    "Digital Product Development",
+    "Graphic Design",
+    "UI/UX Design",
+    "AI & Automation",
+    "Business Research & Data"
+  ],
+  "skills": {
+    "Build": [
+      "Web Development",
+      "Software Development",
+      "Digital Product Development",
+      "UI Engineering",
+      "API Integration",
+      "Database & Authentication"
+    ],
+    "Design": [
+      "Graphic Design",
+      "UI/UX Design",
+      "Social Media Design",
+      "Presentation Design",
+      "Brand Content Design"
+    ],
+    "Think": [
+      "Business & Market Research",
+      "Data Analysis",
+      "Lead Generation & Prospecting",
+      "Product Thinking",
+      "Technical Documentation",
+      "Problem Solving"
+    ],
+    "AI": [
+      "AI-Assisted Development",
+      "Prompt Engineering",
+      "Workflow Automation",
+      "AI Research & Ideation"
+    ]
+  },
+  "technologies": {
+    "Frontend": [
+      "HTML",
+      "CSS",
+      "JavaScript",
+      "TypeScript",
+      "React",
+      "Next.js",
+      "Tailwind CSS"
+    ],
+    "Backend/Data": [
+      "Supabase",
+      "PostgreSQL",
+      "MySQL",
+      "Firebase",
+      "PHP"
+    ],
+    "Infrastructure": [
+      "Git",
+      "GitHub",
+      "Vercel"
+    ],
+    "Creative": [
+      "Canva",
+      "Microsoft PowerPoint"
+    ],
+    "Business": [
+      "Microsoft Excel",
+      "Microsoft Word",
+      "Power BI",
+      "Apollo.io"
+    ],
+    "AI": [
+      "Google AI Studio",
+      "OpenAI / ChatGPT",
+      "Google Flow"
+    ]
+  }
+}
