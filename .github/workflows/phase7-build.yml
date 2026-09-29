@@ -1,0 +1,58 @@
+name: Phase 1-7 Quality Gate
+
+on:
+  push:
+    branches:
+      - phase/07-leads-contact
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://mgzvfhrnrrvbmajkrmgp.supabase.co
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_A9wvzNg4bWz_DxhXDARjGQ_llAp9l-z
+      NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3000
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install dependencies
+        run: npm install
+      - name: Lint
+        run: npm run lint
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Production build
+        run: npm run build
+      - name: Start production server
+        run: |
+          npm run start > /tmp/wikis-tech-next.log 2>&1 &
+          echo $! > /tmp/wikis-tech-next.pid
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:3000/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/wikis-tech-next.log
+          exit 1
+      - name: Public route smoke test
+        run: |
+          set -e
+          for path in / /work /about /archive /lab /services /pricing /contact /quote /admin/login; do
+            code=$(curl -sS -o /tmp/response -w "%{http_code}" "http://127.0.0.1:3000$path")
+            echo "$path -> $code"
+            test "$code" -ge 200
+            test "$code" -lt 400
+          done
+      - name: Stop server
+        if: always()
+        run: |
+          if [ -f /tmp/wikis-tech-next.pid ]; then kill $(cat /tmp/wikis-tech-next.pid) || true; fi
+          if [ -f /tmp/wikis-tech-next.log ]; then tail -100 /tmp/wikis-tech-next.log; fi
