@@ -19,7 +19,7 @@ export default async function HomePage(){
  ]=await Promise.all([
   s.from("hero_settings").select("*").eq("singleton_key","default").single(),
   s.from("page_sections").select("*").eq("page_key","home").eq("enabled",true).order("sort_order"),
-  s.from("project_publications").select("project_id,slug,title,short_description,status,confidential,snapshot").eq("featured",true).order("sort_order").limit(6),
+  s.from("project_publications").select("project_id,slug,title,short_description,status,confidential,featured,snapshot,published_at").order("featured",{ascending:false}).order("sort_order").order("published_at",{ascending:false}).limit(6),
   s.from("about_profile").select("headline,introduction,portrait_url").eq("singleton_key","default").single(),
   s.from("designs").select("id,title,client,year,image_url,design_categories(name)").eq("visibility","public").eq("featured",true).is("deleted_at",null).order("sort_order").limit(6),
   s.from("skills").select("id,name,group_name,sort_order").eq("is_visible",true).order("group_name").order("sort_order"),
