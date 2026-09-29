@@ -266,3 +266,8 @@ html[data-theme="dark"] .theme-toggle{color:#f7f8fc}
 @media(prefers-reduced-motion:reduce){
  .public-page,.public-nav,.public-footer{transition:none!important}
 }
+
+html[data-theme="dark"] .theme-sun{opacity:1;transform:scale(1) rotate(0)}
+html[data-theme="dark"] .theme-moon{opacity:0;transform:scale(.5) rotate(45deg)}
+html[data-theme="light"] .theme-sun{opacity:0;transform:scale(.5) rotate(-45deg)}
+html[data-theme="light"] .theme-moon{opacity:1;transform:scale(1) rotate(0)}
