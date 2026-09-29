@@ -1,5 +1,5 @@
 import {createClient} from "@/lib/supabase/server";
-import {uploadMedia} from "./actions";
+import {MediaUploadForm} from "@/components/admin/media-upload-form";
 
 export default async function MediaPage(){
  const s=await createClient();
@@ -9,13 +9,7 @@ export default async function MediaPage(){
   <h1 className="mt-3 text-4xl font-semibold tracking-[-.04em]">Media Library</h1>
   <p className="mt-2 text-sm text-white/45">Reusable public assets and protected private documents.</p>
   <section className="mt-8 rounded-2xl border border-white/[.08] bg-white/[.025] p-5 sm:p-6">
-   <form action={uploadMedia} className="grid gap-3 lg:grid-cols-[1.5fr_.7fr_.7fr_1fr_auto]">
-    <input name="file" type="file" required accept="image/jpeg,image/png,image/webp,image/avif,application/pdf" className="min-w-0 rounded-xl border border-white/10 bg-black/20 px-3 py-2.5 text-sm"/>
-    <select name="category" className="rounded-xl border border-white/10 bg-[#11141c] px-3 py-2.5"><option>Projects</option><option>Design</option><option>Branding</option><option>Profile</option><option>Blog</option><option>Documents</option><option>Other</option></select>
-    <select name="visibility" className="rounded-xl border border-white/10 bg-[#11141c] px-3 py-2.5"><option value="public">Public</option><option value="private">Private</option></select>
-    <input name="altText" placeholder="Alt text" className="rounded-xl border border-white/10 bg-black/20 px-3 py-2.5"/>
-    <button className="rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-black">Upload</button>
-   </form>
+   <MediaUploadForm/>
    <p className="mt-3 text-xs text-white/30">Public images ≤15 MB. Private images/PDFs ≤10 MB.</p>
   </section>
   <section className="mt-8">{media?.length?<div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">{media.map(x=>{const url=x.visibility==="public"?s.storage.from(x.storage_bucket).getPublicUrl(x.storage_path).data.publicUrl:null;const preview=url&&x.mime_type.startsWith("image/");return <article key={x.id} className="overflow-hidden rounded-2xl border border-white/[.08] bg-white/[.025]"><div className="aspect-[16/10] overflow-hidden bg-black/30">{preview?<div role="img" aria-label={x.alt_text||x.display_name} className="h-full w-full bg-cover bg-center" style={{backgroundImage:`url("${url}")`}}/>:<div className="flex h-full items-center justify-center text-xs text-white/30">{x.mime_type==="application/pdf"?"DOCUMENT":"PRIVATE ASSET"}</div>}</div><div className="p-4"><p className="truncate text-sm font-medium">{x.display_name}</p><p className="mt-1 text-xs text-white/35">{x.category} · {(x.byte_size/1048576).toFixed(2)} MB · {x.visibility}</p></div></article>})}</div>:<div className="rounded-2xl border border-dashed border-white/10 py-16 text-center"><p className="text-sm text-white/55">No media yet.</p><p className="mt-2 text-xs text-white/30">Upload your first asset above.</p></div>}</section>
