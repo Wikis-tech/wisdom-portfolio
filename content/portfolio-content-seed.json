@@ -2,15 +2,19 @@
   "identity": {
     "name": "Okoh Wisdom Uchechukwu",
     "brand": "Wikis Tech Corporation",
+    "publicEmail": "wikistech14@gmail.com",
+    "adminLoginEmail": "wikistech07@gmail.com",
     "tagline": "Software Developer · Digital Product Builder · Creative Technologist",
     "location": "Lagos, Nigeria",
-    "email": "wikistech07@gmail.com",
     "footer": "CODE × DESIGN × AI × STRATEGY"
   },
-  "about": {
-    "headline": "More than one discipline. One way of thinking.",
-    "introduction": "I'm Wisdom, a Computer Science undergraduate, software developer and creative technologist interested in what happens when engineering, design, AI and business thinking work together.",
-    "philosophy": "I care about usefulness before decoration. The strongest work should answer four questions clearly: what was the problem, what did I build, why did it matter, and what changed?"
+  "sourceNotes": {
+    "cvWebsite": "https://wikis-tech.rf.gd",
+    "cvPhoneNumbers": [
+      "08137268006",
+      "09070725772"
+    ],
+    "privacyNote": "Home address, date of birth, religion, marital status, referees and other sensitive personal details are intentionally not published in the portfolio."
   },
   "education": [
     {
@@ -18,7 +22,15 @@
       "program": "Computer Science",
       "qualification": "B.Sc. (in view)",
       "location": "Bayelsa State, Nigeria",
+      "startYear": 2024,
       "current": true
+    },
+    {
+      "institution": "Eti-Osa Community Senior High School",
+      "qualification": "Senior School Leaving Certificate",
+      "location": "Lagos, Nigeria",
+      "startYear": 2021,
+      "endYear": 2023
     }
   ],
   "experience": [
@@ -26,15 +38,45 @@
       "company": "SCM Capital Limited",
       "position": "IT, Product & Creative Support",
       "type": "SIWES / Internship",
-      "start": "2026-04-27",
+      "location": "Lagos, Nigeria",
       "current": true
     },
     {
       "company": "Wikis Tech Corporation",
       "position": "Software Developer & Digital Product Builder",
       "type": "Independent / Personal Brand",
+      "location": "Nigeria",
       "current": true
+    },
+    {
+      "company": "DK Joseph Enterprise",
+      "position": "Computer Operator",
+      "location": "Bayelsa, Nigeria",
+      "period": "2025 – Present"
+    },
+    {
+      "company": "South Gold Nursery and Primary School",
+      "position": "Coding & ICT Instructor",
+      "location": "Lagos, Nigeria",
+      "period": "2025"
+    },
+    {
+      "company": "Kenfort School",
+      "position": "Secondary School Teacher (ICT)",
+      "location": "Lagos, Nigeria",
+      "period": "2024"
+    },
+    {
+      "company": "McKING Computers",
+      "position": "Computer Operator",
+      "location": "Lagos, Nigeria",
+      "period": "2022–2023"
     }
+  ],
+  "leadership": [
+    "Led online programming classes for beginners",
+    "Guest speaker in online tech communities across WhatsApp, Facebook and X",
+    "Mentors beginners in web development"
   ],
   "projects": [
     {
@@ -66,6 +108,33 @@
       "title": "Edusplit School Partnership Pitch",
       "visibility": "private",
       "published": false
+    },
+    {
+      "slug": "fmj-handicraft",
+      "title": "FMJ Handicraft Website",
+      "visibility": "private",
+      "published": false,
+      "liveUrl": "https://fmjhandicraft.name.ng"
+    },
+    {
+      "slug": "gpa-calculator",
+      "title": "GPA Calculator",
+      "visibility": "private",
+      "published": false,
+      "liveUrl": "https://gpacalc.rf.gd"
+    },
+    {
+      "slug": "pixvault-backend",
+      "title": "PixVault Backend",
+      "visibility": "private",
+      "published": false
+    },
+    {
+      "slug": "wikis-tech-legacy",
+      "title": "Wikis Tech Legacy Website",
+      "visibility": "private",
+      "published": false,
+      "liveUrl": "https://wikis-tech.rf.gd"
     }
   ],
   "lab": [
@@ -103,7 +172,11 @@
       "Lead Generation & Prospecting",
       "Product Thinking",
       "Technical Documentation",
-      "Problem Solving"
+      "Problem Solving",
+      "Teaching & Mentoring",
+      "Communication",
+      "Leadership",
+      "Teamwork & Adaptability"
     ],
     "AI": [
       "AI-Assisted Development",
