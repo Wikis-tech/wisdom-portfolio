@@ -5,6 +5,7 @@ import {PublicFooter} from "@/components/portfolio/public-footer";
 import {getPageMetadata} from "@/lib/site/seo";
 
 type CategoryLink={project_categories?:{name?:string;slug?:string}|null};
+type ProjectItem={project_id:string;slug:string;title:string;short_description:string|null;status:string;confidential:boolean;snapshot:unknown;published_at?:string|null};
 type Snap={
  problem?:string;outcome?:string;live_url?:string|null;card_media_url?:string|null;
  categories?:CategoryLink[];
@@ -57,13 +58,13 @@ export default async function WorkPage(){
  </main>
 }
 
-function ProjectSection({title,kicker,items,compact=false,empty}:{title:string;kicker:string;items:NonNullable<Awaited<ReturnType<typeof getProjects>>>;compact?:boolean;empty?:string}){
+function ProjectSection({title,kicker,items,compact=false,empty}:{title:string;kicker:string;items:ProjectItem[];compact?:boolean;empty?:string}){
  return <section className="mx-auto w-[min(1360px,calc(100%-32px))] py-16 sm:w-[min(1360px,calc(100%-40px))] sm:py-20">
   <p className="text-xs font-semibold tracking-[.18em] text-[#6f8cff]">{kicker}</p><h2 className="mt-4 max-w-4xl text-4xl font-semibold tracking-[-.05em] sm:text-6xl">{title}</h2>
   {items.length?<div className={`mt-10 grid gap-6 ${compact?"md:grid-cols-2":"lg:grid-cols-2"}`}>{items.map((p,i)=>{const snap=(p.snapshot??{}) as Snap;const href=previewHref(snap,p.slug);const external=Boolean(snap.live_url);return <article key={p.project_id} className="portfolio-card group overflow-hidden rounded-[28px] border border-white/[.08] bg-[linear-gradient(145deg,rgba(10,24,57,.88),rgba(7,9,16,.96))]">
    <a href={href} target={external?"_blank":undefined} rel={external?"noreferrer":undefined} className="block overflow-hidden" aria-label={external?`Open live ${p.title}`:`Open ${p.title} case study`}>
     <div className={`relative overflow-hidden border-b border-white/[.07] bg-[#081024] ${compact?"aspect-[16/8]":"aspect-[16/10]"}`}>
-     {snap.card_media_url?<div className="h-full w-full bg-cover bg-center transition duration-700 ease-out group-hover:scale-[1.025]" style={{backgroundImage:`url("${snap.card_media_url}")`}}/>:<div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(40,103,232,.24),transparent_35%),linear-gradient(145deg,#0a1a3c,#070910)]"/ >}
+     {snap.card_media_url?<div className="h-full w-full bg-cover bg-center transition duration-700 ease-out group-hover:scale-[1.025]" style={{backgroundImage:`url("${snap.card_media_url}")`}}/>:<div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(40,103,232,.24),transparent_35%),linear-gradient(145deg,#0a1a3c,#070910)]"/>}
      <div className="absolute inset-0 bg-gradient-to-t from-black/25 to-transparent opacity-0 transition duration-500 group-hover:opacity-100"/>
      <span className="absolute right-4 top-4 rounded-full border border-white/10 bg-black/35 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[.14em] text-white/65 backdrop-blur">{external?"Visit live ↗":"View case study ↗"}</span>
     </div>
@@ -73,5 +74,4 @@ function ProjectSection({title,kicker,items,compact=false,empty}:{title:string;k
  </section>
 }
 
-async function getProjects(){return [] as Array<{project_id:string;slug:string;title:string;short_description:string|null;status:string;confidential:boolean;snapshot:unknown}>}
 function Empty({text}:{text:string}){return <div className="mt-10 rounded-3xl border border-dashed border-[#1b356d] bg-[#071025]/45 p-9 text-center text-sm text-white/35">{text}</div>}
