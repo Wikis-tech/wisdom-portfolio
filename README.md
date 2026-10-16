@@ -81,12 +81,13 @@ See the `docs/` directory:
 - [Testing & Production Readiness](docs/TESTING_AND_RELEASE.md)
 - [Contribution & Branching](docs/CONTRIBUTING.md)
 - [Decision Log](docs/DECISIONS.md)
+- [Project Handoff](docs/PROJECT_HANDOFF.md)
+- [Current Status](docs/CURRENT_STATUS.md)
+- [Operations & Continuity Runbook](docs/OPERATIONS_RUNBOOK.md)
 
 ## Status
 
-**Phase 0 / Documentation foundation complete.**
-
-Implementation begins with Phase 1: application foundation, design system, Supabase setup, authentication and authorization.
+**Phase 9 is the active development phase.** Phases 1-8 are implemented, Phase 9 visual/interaction work is in verification, and Phase 10 security/performance/full QA remains. See [Current Status](docs/CURRENT_STATUS.md) and [Project Handoff](docs/PROJECT_HANDOFF.md) before continuing development.
 
 ## Non-negotiables
 
