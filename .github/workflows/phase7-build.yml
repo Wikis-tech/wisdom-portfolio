@@ -1,10 +1,11 @@
-name: Phase 1-8 Quality Gate
+name: Phase 1-9 Quality Gate
 
 on:
   push:
     branches:
       - phase/07-leads-contact
       - phase/08-site-ops
+      - phase/09-visual-experience
   workflow_dispatch:
 
 permissions:

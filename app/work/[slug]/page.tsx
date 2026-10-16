@@ -8,7 +8,7 @@ import {getSiteSettings,siteOrigin} from "@/lib/site/content";
 
 type Snap={
  title:string;short_description?:string;problem?:string;solution?:string;why_it_mattered?:string;outcome?:string;
- year?:number;client?:string;role?:string;status:string;confidential:boolean;live_url?:string|null;github_url?:string|null;
+ year?:number;client?:string;role?:string;status:string;confidential:boolean;live_url?:string|null;github_url?:string|null;card_media_url?:string|null;hero_media_url?:string|null;
  seo_title?:string;seo_description?:string;seo_image_url?:string;seo_noindex?:boolean;
  categories?:Array<{project_categories?:{name?:string;slug?:string}|null}>;
  blocks?:Array<{id:string;block_type:string;data:{content?:string}}>
@@ -36,12 +36,13 @@ export default async function ProjectPage({params}:{params:Promise<{slug:string}
   ["04","WHAT CHANGED",snap.outcome],
  ].filter((item):item is [string,string,string]=>typeof item[2]==="string"&&item[2].trim().length>0);
 
- return <main className="min-h-screen bg-[#06070b] text-white">
+ return <main className="public-page min-h-screen bg-[#06070b] text-white">
   <PublicNav/>
   <article className="mx-auto w-[min(1120px,calc(100%-32px))] py-12 sm:w-[min(1120px,calc(100%-40px))] sm:py-16">
    <p className="text-xs font-semibold uppercase tracking-[.18em] text-[#6f8cff]">{snap.status.replaceAll("_"," ")}</p>
    <h1 className="mt-5 max-w-5xl text-[clamp(2.8rem,7vw,5.8rem)] font-semibold leading-[.94] tracking-[-.055em]">{snap.title}</h1>
    <p className="mt-6 max-w-3xl text-base leading-8 text-white/50 sm:text-lg">{snap.short_description}</p>
+   {snap.hero_media_url?<div className="mt-10 overflow-hidden rounded-[30px] border border-[#3153a4]/25 bg-[#081024] shadow-[0_30px_100px_rgba(0,0,0,.28)]"><div role="img" aria-label={`${snap.title} project preview`} className="aspect-[16/8] w-full bg-cover bg-center" style={{backgroundImage:`url("${snap.hero_media_url}")`}}/></div>:snap.card_media_url?<div className="mt-10 overflow-hidden rounded-[30px] border border-[#3153a4]/20 bg-[#081024]"><div role="img" aria-label={`${snap.title} project preview`} className="aspect-[16/8] w-full bg-cover bg-center" style={{backgroundImage:`url("${snap.card_media_url}")`}}/></div>:null}
    {snap.confidential&&<p className="mt-8 rounded-2xl border border-white/10 bg-white/[.025] p-4 text-sm text-white/45">Selected interface information has been anonymised for confidentiality.</p>}
    <dl className="mt-10 grid gap-5 border-y border-white/[.08] py-6 sm:grid-cols-3">{snap.year&&<div><dt className="text-xs uppercase tracking-wider text-white/30">Year</dt><dd className="mt-2 text-sm">{snap.year}</dd></div>}{snap.client&&<div><dt className="text-xs uppercase tracking-wider text-white/30">Client</dt><dd className="mt-2 text-sm">{snap.client}</dd></div>}{snap.role&&<div><dt className="text-xs uppercase tracking-wider text-white/30">Role</dt><dd className="mt-2 text-sm">{snap.role}</dd></div>}</dl>
 

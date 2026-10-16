@@ -1,5 +1,5 @@
 import {createClient} from "@/lib/supabase/server";
-import {createSocial,deleteSocial,saveAnalytics,saveSiteSettings,saveSocial} from "./actions";
+import {createSocial,deleteSocial,saveAnalytics,saveSiteSettings,saveSocial,uploadFavicon,uploadLogo} from "./actions";
 const input="w-full rounded-xl border border-white/10 bg-black/20 px-3 py-2.5 text-sm outline-none focus:border-[#5f78ff]/60";
 export default async function SettingsPage(){
  const s=await createClient();
@@ -10,7 +10,21 @@ export default async function SettingsPage(){
  ]);
  return <main className="mx-auto max-w-6xl">
   <p className="text-xs font-semibold tracking-[.18em] text-[#6f8cff]">SETTINGS / SITE</p><h1 className="mt-3 text-4xl font-semibold">Global site settings</h1><p className="mt-2 max-w-3xl text-sm leading-6 text-white/40">Identity, contact details, site URLs, footer content, social profiles and analytics readiness. No secret keys belong here.</p>
-  <form action={saveSiteSettings} className="mt-8 rounded-2xl border border-white/[.08] bg-white/[.02] p-5 sm:p-6">
+  <section className="mt-8 rounded-3xl border border-[#17336f]/55 bg-[linear-gradient(145deg,rgba(13,31,72,.28),rgba(255,255,255,.018))] p-5 sm:p-6">
+   <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between"><div><p className="text-xs font-semibold tracking-[.18em] text-[#6f8cff]">BRAND ASSETS</p><h2 className="mt-2 text-xl font-semibold">Logo & favicon</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-white/40">Upload brand images directly. These files are stored in your public portfolio bucket and the live site updates from Site Settings.</p></div><p className="text-xs text-white/30">PNG · JPG · WebP · AVIF</p></div>
+   <div className="mt-6 grid gap-4 md:grid-cols-2">
+    <form action={uploadLogo} className="rounded-2xl border border-white/[.08] bg-black/20 p-4">
+     <div className="flex min-h-28 items-center justify-center rounded-xl border border-dashed border-white/10 bg-white/[.02]">{site?.logo_url?<div role="img" aria-label="Current logo" className="h-16 w-40 bg-contain bg-center bg-no-repeat" style={{backgroundImage:`url("${site.logo_url}")`}}/>:<div className="text-center"><p className="text-sm font-medium text-white/60">Logo placeholder</p><p className="mt-1 text-xs text-white/28">No logo uploaded yet</p></div>}</div>
+     <label className="mt-4 block text-xs text-white/40">Upload logo</label><input name="file" type="file" accept="image/png,image/jpeg,image/webp,image/avif" required className="mt-2 block w-full text-xs text-white/45 file:mr-3 file:rounded-lg file:border-0 file:bg-white file:px-3 file:py-2 file:text-xs file:font-semibold file:text-black"/><button className="mt-4 w-full rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-black">Update logo</button>
+    </form>
+    <form action={uploadFavicon} className="rounded-2xl border border-white/[.08] bg-black/20 p-4">
+     <div className="flex min-h-28 items-center justify-center rounded-xl border border-dashed border-white/10 bg-white/[.02]">{site?.favicon_url?<div role="img" aria-label="Current favicon" className="h-16 w-16 rounded-2xl bg-contain bg-center bg-no-repeat" style={{backgroundImage:`url("${site.favicon_url}")`}}/>:<div className="text-center"><div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-[#0c1b3d] text-sm font-bold tracking-[.12em]">WT</div><p className="mt-2 text-xs text-white/28">Favicon placeholder</p></div>}</div>
+     <label className="mt-4 block text-xs text-white/40">Upload favicon</label><input name="file" type="file" accept="image/png,image/jpeg,image/webp,image/avif" required className="mt-2 block w-full text-xs text-white/45 file:mr-3 file:rounded-lg file:border-0 file:bg-white file:px-3 file:py-2 file:text-xs file:font-semibold file:text-black"/><button className="mt-4 w-full rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-black">Update favicon</button>
+    </form>
+   </div>
+  </section>
+
+  <form action={saveSiteSettings} className="mt-6 rounded-2xl border border-white/[.08] bg-white/[.02] p-5 sm:p-6">
    <h2 className="text-lg font-semibold">Identity & global defaults</h2>
    <div className="mt-5 grid gap-4 md:grid-cols-2">
     <F label="Professional name"><input name="professionalName" defaultValue={site?.professional_name??""} required className={input}/></F>

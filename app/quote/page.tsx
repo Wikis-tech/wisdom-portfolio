@@ -8,7 +8,7 @@ import {getPageMetadata} from "@/lib/site/seo";
 export async function generateMetadata(){return getPageMetadata("quote",{"title":"Request a Quote — Okoh Wisdom","description":"Share your project scope, goals, timeline and optional budget to request a project estimate.","path":"/quote","noindex":true});}
 export default function QuotePage(){
   return (
-    <main className="min-h-screen bg-[#06070b] text-white">
+    <main className="public-page min-h-screen bg-[#06070b] text-white">
       <PublicNav/>
       <section className="mx-auto grid w-[min(1240px,calc(100%-40px))] gap-12 py-20 lg:grid-cols-[.7fr_1.3fr]">
         <div>
