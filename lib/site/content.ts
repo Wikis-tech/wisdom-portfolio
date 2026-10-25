@@ -1,4 +1,5 @@
 import {createClient} from "@/lib/supabase/server";
+import {getSiteUrl} from "@/lib/env";
 
 export type NavigationItem={
  id:string;label:string;href:string;location:"header"|"footer";style:"link"|"cta";
@@ -73,5 +74,13 @@ export async function getAnalyticsSettings():Promise<AnalyticsSettings>{
 }
 
 export function siteOrigin(site:Pick<SiteSettings,"site_url">){
- return (site.site_url||process.env.NEXT_PUBLIC_SITE_URL||"https://wisdom-portfolio-five.vercel.app").replace(/\/$/,"");
+ const raw=(site.site_url||"").trim();
+ if(!raw)return getSiteUrl().replace(/\/$/,"");
+
+ const candidate=/^https?:\/\//i.test(raw)?raw:`https://${raw}`;
+ try{
+  return new URL(candidate).origin;
+ }catch{
+  return getSiteUrl().replace(/\/$/,"");
+ }
 }

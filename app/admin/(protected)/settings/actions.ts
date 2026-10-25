@@ -4,6 +4,29 @@ import {z} from "zod";
 import {requireCmsUser} from "@/lib/auth/require-cms-user";
 import {createClient} from "@/lib/supabase/server";
 
+const brandImages=["image/png","image/jpeg","image/webp","image/avif"];
+function safeAssetName(name:string){const parts=name.toLowerCase().split(".");const ext=parts.length>1?parts.pop()!.replace(/[^a-z0-9]/g,""):"png";const base=parts.join(".").replace(/[^a-z0-9-_]+/g,"-").replace(/^-+|-+$/g,"").slice(0,60)||"brand";return `${base}.${ext}`}
+async function uploadBrandAsset(fd:FormData,kind:"logo"|"favicon"){
+ const user=await requireCmsUser();
+ const file=fd.get("file");
+ if(!(file instanceof File)||file.size<=0)throw new Error("Choose an image to upload.");
+ if(!brandImages.includes(file.type))throw new Error("Use PNG, JPG, WebP or AVIF.");
+ const max=kind==="favicon"?1024*1024:3*1024*1024;
+ if(file.size>max)throw new Error(kind==="favicon"?"Favicon must be 1 MB or smaller.":"Logo must be 3 MB or smaller.");
+ const s=await createClient();
+ const path=`brand/${kind}/${user.id}/${crypto.randomUUID()}-${safeAssetName(file.name)}`;
+ const {error:uploadError}=await s.storage.from("portfolio-public").upload(path,file,{contentType:file.type,upsert:false});
+ if(uploadError)throw new Error("Could not upload the image.");
+ const publicUrl=s.storage.from("portfolio-public").getPublicUrl(path).data.publicUrl;
+ const column=kind==="logo"?"logo_url":"favicon_url";
+ const {error:updateError}=await s.from("site_settings").update({[column]:publicUrl,updated_at:new Date().toISOString()}).eq("singleton_key","default");
+ if(updateError){await s.storage.from("portfolio-public").remove([path]);throw new Error("The image uploaded, but site settings could not be updated.");}
+ await s.from("activity_logs").insert({user_id:user.id,action:kind==="logo"?"Site logo updated":"Site favicon updated",entity_type:"site_settings",metadata:{kind}});
+ refreshSite();
+ return publicUrl;
+}
+
+
 const optionalHttps=z.union([z.literal(""),z.string().url().refine(v=>v.startsWith("https://"),"HTTPS required")]);
 const siteSchema=z.object({
  professionalName:z.string().trim().min(2).max(120),
@@ -84,4 +107,12 @@ export async function saveAnalytics(fd:FormData){
  if(error)throw new Error("Could not save analytics settings.");
  await s.from("activity_logs").insert({user_id:user.id,action:"Analytics configuration updated",entity_type:"analytics",metadata:{enabled,provider}});
  refreshSite();
+}
+
+
+export async function uploadLogo(fd:FormData){
+ await uploadBrandAsset(fd,"logo");
+}
+export async function uploadFavicon(fd:FormData){
+ await uploadBrandAsset(fd,"favicon");
 }
