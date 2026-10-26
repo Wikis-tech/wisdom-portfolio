@@ -3,6 +3,7 @@ import {createClient} from "@/lib/supabase/server";
 import {PublicNav} from "@/components/portfolio/public-nav";
 import {PublicFooter} from "@/components/portfolio/public-footer";
 import {getPageMetadata} from "@/lib/site/seo";
+import {fallbackProjects} from "@/lib/site/fallback-content";
 
 type CategoryLink={project_categories?:{name?:string;slug?:string}|null};
 type ProjectItem={project_id:string;slug:string;title:string;short_description:string|null;status:string;confidential:boolean;snapshot:unknown;published_at?:string|null};
@@ -25,10 +26,11 @@ export default async function WorkPage(){
   s.from("project_publications").select("project_id,slug,title,short_description,status,confidential,snapshot,published_at").order("sort_order").order("published_at",{ascending:false}),
   s.from("designs").select("id,title,client,year,description,image_url,tags,design_categories(name)").eq("visibility","public").is("deleted_at",null).order("sort_order")
  ]);
- const digital=(projects??[]).filter(p=>isIn((p.snapshot??{}) as Snap,["software","product","ui-ux","ai"]));
- const strategy=(projects??[]).filter(p=>isIn((p.snapshot??{}) as Snap,["business-research","presentation","branding"]));
+ const projectRows=(projects?.length?projects:fallbackProjects) as ProjectItem[];
+ const digital=projectRows.filter(p=>isIn((p.snapshot??{}) as Snap,["software","product","ui-ux","ai"]));
+ const strategy=projectRows.filter(p=>isIn((p.snapshot??{}) as Snap,["business-research","presentation","branding"]));
  const used=new Set([...digital,...strategy].map(x=>x.project_id));
- const other=(projects??[]).filter(p=>!used.has(p.project_id));
+ const other=projectRows.filter(p=>!used.has(p.project_id));
 
  return <main className="public-page min-h-screen bg-[#050812] text-white">
   <PublicNav/>
