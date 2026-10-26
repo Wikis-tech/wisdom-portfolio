@@ -4,6 +4,7 @@ import {PublicNav} from "@/components/portfolio/public-nav";
 import {PublicFooter} from "@/components/portfolio/public-footer";
 import {getPageMetadata} from "@/lib/site/seo";
 import {fallbackProjects} from "@/lib/site/fallback-content";
+import {verifiedBuilds} from "@/lib/site/verified-builds";
 
 type CategoryLink={project_categories?:{name?:string;slug?:string}|null};
 type ProjectItem={project_id:string;slug:string;title:string;short_description:string|null;status:string;confidential:boolean;snapshot:unknown;published_at?:string|null};
@@ -45,6 +46,23 @@ export default async function WorkPage(){
   <ProjectSection title="Websites, software & digital products" kicker="BUILD" items={digital} empty="Publish projects under Software, Product, UI/UX or AI to fill this section."/>
   <ProjectSection title="Research, strategy & presentations" kicker="THINK" items={strategy} compact empty="Business research, presentation and branding projects will appear here."/>
   {other.length?<ProjectSection title="More selected work" kicker="MORE" items={other} compact/>:null}
+
+  <section data-reveal="up" className="mx-auto w-[min(1360px,calc(100%-32px))] py-16 sm:w-[min(1360px,calc(100%-40px))] sm:py-20">
+   <p className="text-xs font-semibold tracking-[.18em] text-[#6f8cff]">MORE WEB BUILDS</p>
+   <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+    <h2 className="max-w-4xl font-semibold tracking-[-.05em]">Smaller builds, live experiments and frontend studies.</h2>
+    <p className="max-w-xl text-sm leading-6 text-white/42">These are useful supporting projects rather than full case studies. They show range across business sites, landing pages, community websites and interface concepts.</p>
+   </div>
+   <div className="mt-9 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+    {verifiedBuilds.map((item,i)=><article key={item.slug} data-reveal="up" data-delay={Math.min(i*55,275)} className="portfolio-card border border-white/[.08] bg-white/[.025] p-5">
+      <div className="flex items-center justify-between gap-3"><p className="text-[10px] font-semibold uppercase tracking-[.16em] text-[#7890ff]">{item.kind}</p><span className="text-[10px] uppercase tracking-[.14em] text-white/25">0{i+1}</span></div>
+      <h3 className="mt-4 font-semibold">{item.title}</h3>
+      <p className="mt-3 text-sm leading-6 text-white/45">{item.description}</p>
+      <div className="mt-4 flex flex-wrap gap-2">{item.stack.map(x=><span key={x} className="border border-white/[.08] bg-white/[.03] px-2.5 py-1 text-[10px] uppercase tracking-[.1em] text-white/45">{x}</span>)}</div>
+      <div className="mt-5 flex gap-4 text-xs"><a href={item.liveUrl} target="_blank" rel="noreferrer" className="text-[#9fb2ff] transition hover:text-white">Open live ↗</a><a href={item.repoUrl} target="_blank" rel="noreferrer" className="text-white/38 transition hover:text-white">GitHub ↗</a></div>
+    </article>)}
+   </div>
+  </section>
 
   <section data-reveal="up" className="mx-auto w-[min(1360px,calc(100%-32px))] py-20 sm:w-[min(1360px,calc(100%-40px))] sm:py-24">
    <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
