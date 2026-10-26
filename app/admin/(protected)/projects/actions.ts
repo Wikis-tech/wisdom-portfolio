@@ -169,9 +169,10 @@ export async function publishProject(fd:FormData){
   cardMediaUrl=urlFor(project.card_media_id);
   heroMediaUrl=urlFor(project.hero_media_id);
  }
- if(project.visibility==="public"){
-  const missing=[["problem",project.problem],["what I built",project.solution],["why it mattered",project.why_it_mattered],["what changed",project.outcome]].filter(([,value])=>!String(value??"").trim()).map(([label])=>label);
-  if(missing.length)throw new Error(`Complete the case study before publishing: ${missing.join(", ")}.`);
+ // Publishing a simple website listing does not require a four-part case study.
+ // A meaningful description or live link is sufficient; richer details remain optional.
+ if(project.visibility==="public"&&!String(project.short_description??"").trim()&&!project.live_url&&!String(project.solution??"").trim()){
+  throw new Error("Add a short description or website link before publishing.");
  }
  const snapshot={
   title:project.title,
