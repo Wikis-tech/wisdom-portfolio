@@ -16,8 +16,8 @@ export default async function HomePage(){
   getSiteSettings(),
   s.from("hero_settings").select("*").eq("singleton_key","default").maybeSingle(),
   s.from("about_profile").select("*").eq("singleton_key","default").maybeSingle(),
-  s.from("skills").select("id,name,group_name,description,sort_order").eq("is_visible",true).order("sort_order"),
-  s.from("experience").select("id,company,position,start_date,end_date,current_position,description,sort_order").eq("visible",true).order("sort_order"),
+  s.from("skills").select("id,name,group_name,sort_order").eq("is_visible",true).order("sort_order"),
+  s.from("experiences").select("id,company,position,start_date,end_date,current_position,description,sort_order").eq("is_visible",true).order("sort_order"),
   s.from("project_publications").select("project_id,slug,title,short_description,status,featured,snapshot,published_at").order("featured",{ascending:false}).order("sort_order").limit(6),
   s.from("services").select("id,title,short_description,full_description,starting_price,currency,cta_url,featured").eq("enabled",true).is("deleted_at",null).order("featured",{ascending:false}).order("sort_order").limit(6),
   s.from("experiments").select("id,title,slug,description,status,technology,image_url,featured").eq("visibility","public").is("deleted_at",null).order("featured",{ascending:false}).order("sort_order").limit(4),
@@ -53,7 +53,7 @@ export default async function HomePage(){
 
   <section className="legacy-section legacy-skills" id="skills" data-reveal="up">
    <div className="legacy-section-head"><div><p className="legacy-section-label">Capabilities</p><h2 className="legacy-section-title">What I Build With</h2></div><p>I work across code, design, AI and strategy. The tool changes; the goal stays the same: solve the problem well.</p></div>
-   <div className="legacy-skill-grid">{(skills??[]).slice(0,12).map((x,i)=><article key={x.id} className="legacy-skill-card" data-reveal="up" data-delay={Math.min(i*45,300)}><span>{x.group_name}</span><h3>{x.name}</h3><p>{x.description||"Part of my working toolkit for designing and building useful digital experiences."}</p></article>)}</div>
+   <div className="legacy-skill-grid">{(skills??[]).slice(0,12).map((x,i)=><article key={x.id} className="legacy-skill-card" data-reveal="up" data-delay={Math.min(i*45,300)}><span>{x.group_name}</span><h3>{x.name}</h3><p>Part of my working toolkit for designing and building useful digital experiences.</p></article>)}</div>
   </section>
 
   <section className="legacy-section legacy-experience" id="experience" data-reveal="up">
