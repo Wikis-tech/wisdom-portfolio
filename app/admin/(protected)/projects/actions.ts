@@ -101,13 +101,19 @@ export async function createQuickProject(fd:FormData){
  if(title.length<2||title.length>120)throw new Error("Enter a project title (2-120 characters).");
  if(description.length>500)throw new Error("Description cannot exceed 500 characters.");
  if(url){try{const u=new URL(url);if(!["http:","https:"].includes(u.protocol))throw new Error("protocol");}catch{throw new Error("Enter a valid website link.");}}
- const slug=title.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");
- if(!slug)throw new Error("The title must include letters or numbers.");
+ const baseSlug=title.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");
+ if(!baseSlug)throw new Error("The title must include letters or numbers.");
+ const s=await createClient();
+ const {data:existing,error:slugError}=await s.from("projects").select("slug").like("slug",baseSlug+"%").limit(100);
+ if(slugError)throw new Error("Could not check existing projects.");
+ const used=new Set((existing??[]).map(x=>x.slug));
+ let slug=baseSlug;
+ for(let suffix=2;used.has(slug)&&suffix<=101;suffix++)slug=`${baseSlug}-${suffix}`;
+ if(used.has(slug))throw new Error("Too many projects with the same name.");
  const form=new FormData();
  form.set("title",title);form.set("slug",slug);form.set("shortDescription",description);
  form.set("liveUrl",url);form.set("githubUrl","");
  form.set("status",url?"live":"in_development");form.set("visibility","private");
- const s=await createClient();
  const {data:category}=await s.from("project_categories").select("id").eq("slug","software").maybeSingle();
  if(category)form.append("categories",category.id);
  return createProject(form);
