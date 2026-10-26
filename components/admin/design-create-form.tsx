@@ -15,6 +15,7 @@ export function DesignCreateForm({categories}:{categories:Cat[]}){
   try{
    const file=formData.get("file");
    const existing=String(formData.get("imageUrl")||"").trim();
+   if(String(formData.get("visibility"))==="private")throw new Error("Private design files require protected storage. For now, only upload public portfolio artwork.");
    if(file instanceof File&&file.size>0){
     if(!["image/png","image/jpeg","image/webp","image/avif"].includes(file.type))throw new Error("Choose a PNG, JPG, WebP or AVIF image.");
     if(file.size>8*1024*1024)throw new Error("The maximum image size is 8 MB.");
@@ -32,7 +33,7 @@ export function DesignCreateForm({categories}:{categories:Cat[]}){
    router.refresh();
   }catch(e){
    setError(e instanceof Error?e.message:"Could not save the design.");
-   if(uploadedPath){/* Keep the uploaded object for recovery when an insert fails. */}
+   if(uploadedPath){await createClient().storage.from("portfolio-public").remove([uploadedPath]);}
   }finally{setBusy(false)}
  }
  return <form action={submit} className="mt-5 grid gap-4 md:grid-cols-2">
