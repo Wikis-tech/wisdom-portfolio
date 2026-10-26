@@ -94,6 +94,25 @@ export async function createProject(fd:FormData){
  redirect(`/admin/projects/${data.id}`);
 }
 
+export async function createQuickProject(fd:FormData){
+ const title=String(fd.get("title")??"").trim();
+ const url=String(fd.get("liveUrl")??"").trim();
+ const description=String(fd.get("shortDescription")??"").trim();
+ if(title.length<2||title.length>120)throw new Error("Enter a project title (2-120 characters).");
+ if(description.length>500)throw new Error("Description cannot exceed 500 characters.");
+ if(url){try{const u=new URL(url);if(!["http:","https:"].includes(u.protocol))throw new Error("protocol");}catch{throw new Error("Enter a valid website link.");}}
+ const slug=title.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");
+ if(!slug)throw new Error("The title must include letters or numbers.");
+ const form=new FormData();
+ form.set("title",title);form.set("slug",slug);form.set("shortDescription",description);
+ form.set("liveUrl",url);form.set("githubUrl","");
+ form.set("status",url?"live":"in_development");form.set("visibility","private");
+ const s=await createClient();
+ const {data:category}=await s.from("project_categories").select("id").eq("slug","software").maybeSingle();
+ if(category)form.append("categories",category.id);
+ return createProject(form);
+}
+
 export async function updateProject(fd:FormData){
  const user=await requireCmsUser();
  const supabase=await createClient();
