@@ -6,6 +6,8 @@ on:
       - phase/07-leads-contact
       - phase/08-site-ops
       - phase/09-visual-experience
+      - phase/09b-old-portfolio-remix
+      - fix/phase9b-admin-stability
   workflow_dispatch:
 
 permissions:
