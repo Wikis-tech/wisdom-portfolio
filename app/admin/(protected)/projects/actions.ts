@@ -94,6 +94,31 @@ export async function createProject(fd:FormData){
  redirect(`/admin/projects/${data.id}`);
 }
 
+export async function createQuickProject(fd:FormData){
+ const title=String(fd.get("title")??"").trim();
+ const url=String(fd.get("liveUrl")??"").trim();
+ const description=String(fd.get("shortDescription")??"").trim();
+ if(title.length<2||title.length>120)throw new Error("Enter a project title (2-120 characters).");
+ if(description.length>500)throw new Error("Description cannot exceed 500 characters.");
+ if(url){try{const u=new URL(url);if(!["http:","https:"].includes(u.protocol))throw new Error("protocol");}catch{throw new Error("Enter a valid website link.");}}
+ const baseSlug=title.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");
+ if(!baseSlug)throw new Error("The title must include letters or numbers.");
+ const s=await createClient();
+ const {data:existing,error:slugError}=await s.from("projects").select("slug").like("slug",baseSlug+"%").limit(100);
+ if(slugError)throw new Error("Could not check existing projects.");
+ const used=new Set((existing??[]).map(x=>x.slug));
+ let slug=baseSlug;
+ for(let suffix=2;used.has(slug)&&suffix<=101;suffix++)slug=`${baseSlug}-${suffix}`;
+ if(used.has(slug))throw new Error("Too many projects with the same name.");
+ const form=new FormData();
+ form.set("title",title);form.set("slug",slug);form.set("shortDescription",description);
+ form.set("liveUrl",url);form.set("githubUrl","");
+ form.set("status",url?"live":"in_development");form.set("visibility","private");
+ const {data:category}=await s.from("project_categories").select("id").eq("slug","software").maybeSingle();
+ if(category)form.append("categories",category.id);
+ return createProject(form);
+}
+
 export async function updateProject(fd:FormData){
  const user=await requireCmsUser();
  const supabase=await createClient();
@@ -150,9 +175,10 @@ export async function publishProject(fd:FormData){
   cardMediaUrl=urlFor(project.card_media_id);
   heroMediaUrl=urlFor(project.hero_media_id);
  }
- if(project.visibility==="public"){
-  const missing=[["problem",project.problem],["what I built",project.solution],["why it mattered",project.why_it_mattered],["what changed",project.outcome]].filter(([,value])=>!String(value??"").trim()).map(([label])=>label);
-  if(missing.length)throw new Error(`Complete the case study before publishing: ${missing.join(", ")}.`);
+ // Publishing a simple website listing does not require a four-part case study.
+ // A meaningful description or live link is sufficient; richer details remain optional.
+ if(project.visibility==="public"&&!String(project.short_description??"").trim()&&!project.live_url&&!String(project.solution??"").trim()){
+  throw new Error("Add a short description or website link before publishing.");
  }
  const snapshot={
   title:project.title,
