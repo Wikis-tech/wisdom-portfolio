@@ -1,6 +1,6 @@
 import Link from "next/link";
 import {createClient} from "@/lib/supabase/server";
-import {createService} from "./actions";
+import {createQuickService} from "./actions";
 
 const input="w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-sm";
 
@@ -19,7 +19,7 @@ export default async function ServicesAdmin({searchParams}:{searchParams:Promise
 
   <section className="mt-8 rounded-2xl border border-white/[.08] bg-white/[.025] p-5 sm:p-6">
    <h2 className="text-lg font-semibold">Add a service</h2>
-   <form action={createService} className="mt-5 space-y-4">
+   <form action={createQuickService} className="mt-5 space-y-4">
     <label className="block text-sm text-white/70">Service name<input name="title" required maxLength={120} placeholder="e.g. Web Development" className={"mt-2 "+input}/></label>
     <label className="block text-sm text-white/70">Short description<textarea name="shortDescription" required rows={3} maxLength={500} placeholder="What do you do, and what does it help the client achieve?" className={"mt-2 "+input}/></label>
     <label className="block text-sm text-white/70">Starting price <span className="text-white/30">(optional)</span><div className="mt-2 grid grid-cols-[90px_1fr] gap-2"><input value="NGN" readOnly className={input+" text-white/40"}/><input name="startingPrice" type="number" min="0" placeholder="70000" className={input}/></div></label>
