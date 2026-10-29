@@ -5,11 +5,9 @@ import {usePathname} from "next/navigation";
 import {useState} from "react";
 
 const groups=[
- {label:"",items:[["Overview","/admin"]]},
- {label:"CONTENT",items:[["Home","/admin/pages/home"],["Projects","/admin/projects"],["Design Archive","/admin/designs"],["Lab","/admin/lab"],["About","/admin/about"],["Experience","/admin/experience"],["Now","/admin/now"]]},
- {label:"BUSINESS",items:[["Services","/admin/services"],["Pricing","/admin/pricing"],["Quotes","/admin/quotes"],["Messages","/admin/messages"]]},
- {label:"SITE",items:[["Skills","/admin/skills"],["Technologies","/admin/technologies"],["Testimonials","/admin/testimonials"],["Navigation","/admin/navigation"],["Media","/admin/media"],["SEO","/admin/seo"]]},
- {label:"SETTINGS",items:[["Site Settings","/admin/settings"],["Trash","/admin/trash"]]},
+ {label:"START HERE",items:[["Dashboard","/admin"],["Websites & Apps","/admin/projects"],["Graphic Designs","/admin/designs"],["Edit Homepage","/admin/pages/home"]]},
+ {label:"YOUR WEBSITE",items:[["About & Bio","/admin/about"],["Work Experience","/admin/experience"],["Services & Pricing","/admin/services"],["Messages & Enquiries","/admin/messages"]]},
+ {label:"TOOLS & SETTINGS",items:[["Image & File Library","/admin/media"],["Site Settings","/admin/settings"]]},
 ] as const;
 
 export function AdminSidebar(){
@@ -20,9 +18,9 @@ export function AdminSidebar(){
  const contents=<>
   <Link href="/admin" onClick={close} className="mb-7 block">
    <span className="text-sm font-bold tracking-[0.24em] text-white">WIKIS TECH</span>
-   <span className="mt-1 block text-xs text-white/40">Portfolio OS</span>
+   <span className="mt-1 block text-xs text-white/40">Manage your website</span>
   </Link>
-  <nav className="space-y-6" aria-label="Admin navigation">
+  <nav className="space-y-5" aria-label="Admin navigation">
    {groups.map(group=><div key={group.label||"root"}>
     {group.label&&<p className="mb-2 px-2 text-[10px] font-semibold tracking-[0.2em] text-white/30">{group.label}</p>}
     <div className="space-y-1">{group.items.map(([label,href])=>{const active=pathname===href||(href!=="/admin"&&pathname.startsWith(href+"/"));return <Link onClick={close} key={href} href={href} aria-current={active?"page":undefined} className={`block rounded-lg px-3 py-2 text-sm transition ${active?"bg-white/[.07] text-white":"text-white/55 hover:bg-white/[.05] hover:text-white"}`}>{label}</Link>})}</div>
