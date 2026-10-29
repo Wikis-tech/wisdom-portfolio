@@ -36,7 +36,8 @@ export function BrandAssetUpload({kind,currentUrl}:{kind:"logo"|"favicon";curren
    if(uploadError)throw new Error(uploadError.message||"Upload failed.");
    const payload=new FormData();
    payload.set("kind",kind);payload.set("path",path);payload.set("mimeType",file.type);payload.set("byteSize",String(file.size));
-   await finalizeBrandAssetUpload(payload);
+   const result=await finalizeBrandAssetUpload(payload);
+   if(!result.ok)throw new Error(result.message||"Could not update the image.");
    setMessage(`${label} updated.`);
    router.refresh();
   }catch(error){
