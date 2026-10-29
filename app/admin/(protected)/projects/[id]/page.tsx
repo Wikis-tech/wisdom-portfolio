@@ -92,7 +92,7 @@ export default async function ProjectEditor({params,searchParams}:{params:Promis
 
   <section className="mt-8 rounded-2xl border border-[#183a7a]/45 bg-[linear-gradient(145deg,rgba(13,31,72,.22),rgba(255,255,255,.015))] p-5 sm:p-6">
    <h2 className="text-xl font-semibold">2. Project images</h2>
-   <p className="mt-1 text-sm leading-6 text-white/40">Upload a screenshot for the Work card. The larger hero image is optional.</p>
+   <p className="mt-1 text-sm leading-6 text-white/40">Upload a screenshot for the Work card. The larger hero image is optional.</p><div className="mt-3 rounded-xl border border-blue-400/15 bg-blue-400/[.04] px-4 py-3 text-xs leading-5 text-white/50">Use only public-safe screenshots here. These portfolio preview images are stored in the public media bucket. Confidential source files should stay in the private Media Library.</div>
    <div className="mt-5 grid gap-4 lg:grid-cols-2"><ProjectImageUpload projectId={id} kind="card" currentUrl={cardUrl}/><ProjectImageUpload projectId={id} kind="hero" currentUrl={heroUrl}/></div>
   </section>
 
