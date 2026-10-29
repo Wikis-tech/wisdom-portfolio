@@ -259,3 +259,43 @@ export async function uploadProjectMedia(fd:FormData){
  await s.from("activity_logs").insert({user_id:user.id,action:kind==="card"?"Project preview image updated":"Project hero image updated",entity_type:"project",entity_id:projectId});
  revalidatePath(`/admin/projects/${projectId}`);
 }
+
+
+export async function finalizeProjectMediaUpload(fd:FormData){
+ const user=await requireCmsUser();
+ const projectId=String(fd.get("projectId")??"");
+ const kind=String(fd.get("kind")??"");
+ const path=String(fd.get("path")??"");
+ const originalName=String(fd.get("originalName")??"").slice(0,255);
+ const mimeType=String(fd.get("mimeType")??"");
+ const byteSize=Number(fd.get("byteSize")||0);
+ if(!/^[0-9a-f-]{36}$/i.test(projectId))throw new Error("Invalid project.");
+ if(!["card","hero"].includes(kind))throw new Error("Unknown project image type.");
+ if(!projectImages.includes(mimeType))throw new Error("Use PNG, JPG, WebP or AVIF.");
+ if(!Number.isFinite(byteSize)||byteSize<=0||byteSize>8*1024*1024)throw new Error("Project images must be 8 MB or smaller.");
+ const prefix=`projects/${projectId}/${kind}/${user.id}/`;
+ if(!path.startsWith(prefix))throw new Error("That upload path does not belong to this project/admin session.");
+
+ const s=await createClient();
+ const {data:project,error:projectError}=await s.from("projects").select("id").eq("id",projectId).is("deleted_at",null).maybeSingle();
+ if(projectError||!project)throw new Error("Project not found or access denied.");
+ const folder=path.slice(0,path.lastIndexOf("/"));
+ const filename=path.slice(path.lastIndexOf("/")+1);
+ const {data:objects,error:listError}=await s.storage.from("portfolio-public").list(folder,{search:filename,limit:5});
+ if(listError||!objects?.some(x=>x.name===filename))throw new Error("Uploaded image could not be verified.");
+
+ const {data:media,error:mediaError}=await s.from("media_library").insert({
+  storage_bucket:"portfolio-public",storage_path:path,original_name:originalName||filename,display_name:originalName||filename,mime_type:mimeType,byte_size:byteSize,
+  alt_text:kind==="card"?"Project preview image":"Project hero image",category:"Projects",visibility:"public",created_by:user.id
+ }).select("id").single();
+ if(mediaError)throw new Error("The image uploaded, but its media record could not be saved.");
+
+ const column=kind==="card"?"card_media_id":"hero_media_id";
+ const {data:updated,error:updateError}=await s.from("projects").update({[column]:media.id,updated_by:user.id,updated_at:new Date().toISOString()}).eq("id",projectId).select("id").maybeSingle();
+ if(updateError||!updated){
+  await s.from("media_library").delete().eq("id",media.id);
+  throw new Error("The image uploaded, but could not be attached to the project.");
+ }
+ await s.from("activity_logs").insert({user_id:user.id,action:kind==="card"?"Project preview image updated":"Project hero image updated",entity_type:"project",entity_id:projectId});
+ revalidatePath(`/admin/projects/${projectId}`);
+}
