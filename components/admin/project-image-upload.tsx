@@ -38,7 +38,8 @@ export function ProjectImageUpload({projectId,kind,currentUrl}:{projectId:string
    const payload=new FormData();
    payload.set("projectId",projectId);payload.set("kind",kind);payload.set("path",path);
    payload.set("originalName",file.name);payload.set("mimeType",file.type);payload.set("byteSize",String(file.size));
-   await finalizeProjectMediaUpload(payload);
+   const result=await finalizeProjectMediaUpload(payload);
+   if(!result.ok)throw new Error(result.message||"Could not attach the image.");
    setMessage(`${label} updated.`);
    router.refresh();
   }catch(error){
