@@ -5,25 +5,28 @@ import {usePathname} from "next/navigation";
 import {useState} from "react";
 
 const primary=[
- ["Dashboard","/admin"],
+ ["Overview","/admin"],
  ["Websites & Apps","/admin/projects"],
  ["Graphic Designs","/admin/designs"],
- ["Edit Homepage","/admin/pages/home"],
+ ["Homepage","/admin/pages/home"],
  ["About Me","/admin/about"],
- ["Work Experience","/admin/experience"],
  ["Services","/admin/services"],
- ["Messages","/admin/messages"],
- ["Media Library","/admin/media"],
- ["Site Settings","/admin/settings"],
+ ["Inbox","/admin/messages"],
 ] as const;
 
-const advanced=[
+const manage=[
+ ["Media Library","/admin/media"],
+ ["Work Experience","/admin/experience"],
  ["Lab / Experiments","/admin/lab"],
- ["Pricing Packages","/admin/pricing"],
+ ["Pricing","/admin/pricing"],
  ["Now / Current Focus","/admin/now"],
  ["Skills","/admin/skills"],
  ["Technologies","/admin/technologies"],
  ["Testimonials","/admin/testimonials"],
+] as const;
+
+const site=[
+ ["Site Settings","/admin/settings"],
  ["Navigation","/admin/navigation"],
  ["SEO","/admin/seo"],
  ["Quote Requests","/admin/quotes"],
@@ -36,31 +39,35 @@ export function AdminSidebar(){
  const close=()=>setOpen(false);
  const linkClass=(href:string)=>{
   const active=pathname===href||(href!=="/admin"&&pathname.startsWith(href+"/"));
-  return "block rounded-lg px-3 py-2.5 text-sm transition "+(active?"bg-white/[.08] text-white":"text-white/55 hover:bg-white/[.05] hover:text-white");
+  return "block rounded-xl px-3 py-2.5 text-sm transition "+(active?"bg-[#183a7a]/55 text-white ring-1 ring-blue-400/15":"text-white/58 hover:bg-white/[.05] hover:text-white");
  };
+ const links=(items:readonly (readonly [string,string])[])=>items.map(([label,href])=><Link key={href} href={href} onClick={close} className={linkClass(href)}>{label}</Link>);
 
  const contents=<>
-  <Link href="/admin" onClick={close} className="mb-6 block">
+  <Link href="/admin" onClick={close} className="mb-5 block">
    <span className="text-sm font-bold tracking-[0.22em] text-white">WIKIS TECH</span>
-   <span className="mt-1 block text-xs text-white/40">Portfolio manager</span>
+   <span className="mt-1 block text-xs text-white/40">Simple portfolio manager</span>
   </Link>
 
-  <div className="mb-4 rounded-xl border border-blue-400/10 bg-blue-400/[.035] p-3 text-xs leading-5 text-white/50">
-   Most updates happen in just four places: <span className="text-white/80">Websites & Apps, Graphic Designs, Homepage, and Messages.</span>
+  <div className="mb-5 rounded-2xl border border-blue-400/10 bg-blue-400/[.04] p-3 text-xs leading-5 text-white/52">
+   <strong className="text-white/80">Normal workflow:</strong><br/>
+   add work → add image → publish → check live site.
   </div>
 
-  <nav className="space-y-1" aria-label="Admin navigation">
-   {primary.map(([label,href])=><Link key={href} href={href} onClick={close} className={linkClass(href)}>{label}</Link>)}
-  </nav>
+  <p className="mb-2 px-3 text-[10px] font-semibold tracking-[.16em] text-white/25">EVERYDAY</p>
+  <nav className="space-y-1" aria-label="Everyday admin navigation">{links(primary)}</nav>
 
-  <details className="mt-5 rounded-xl border border-white/[.06] bg-white/[.015] p-2">
-   <summary className="cursor-pointer list-none rounded-lg px-2 py-2 text-xs font-semibold tracking-[.12em] text-white/35">MORE TOOLS</summary>
-   <nav className="mt-1 space-y-1" aria-label="Advanced admin navigation">
-    {advanced.map(([label,href])=><Link key={href} href={href} onClick={close} className={linkClass(href)}>{label}</Link>)}
-   </nav>
+  <details className="mt-5 rounded-2xl border border-white/[.06] bg-white/[.015] p-2">
+   <summary className="cursor-pointer list-none rounded-xl px-2 py-2 text-xs font-semibold tracking-[.12em] text-white/38">MORE CONTENT</summary>
+   <nav className="mt-1 space-y-1" aria-label="More content navigation">{links(manage)}</nav>
   </details>
 
-  <Link href="/" onClick={close} className="mt-auto rounded-xl border border-white/10 px-3 py-3 text-sm text-white/70 transition hover:bg-white/[.05]">View Portfolio ↗</Link>
+  <details className="mt-3 rounded-2xl border border-white/[.06] bg-white/[.015] p-2">
+   <summary className="cursor-pointer list-none rounded-xl px-2 py-2 text-xs font-semibold tracking-[.12em] text-white/38">WEBSITE SETTINGS</summary>
+   <nav className="mt-1 space-y-1" aria-label="Site settings navigation">{links(site)}</nav>
+  </details>
+
+  <Link href="/" onClick={close} className="mt-auto rounded-xl border border-white/10 px-3 py-3 text-sm text-white/70 transition hover:bg-white/[.05]">View live portfolio ↗</Link>
  </>;
 
  return <>
