@@ -51,7 +51,8 @@ export function MediaUploadForm(){
    payload.set("altText",String(formData.get("altText")||""));
 
    try{
-    await finalizeMediaUpload(payload);
+    const result=await finalizeMediaUpload(payload);
+    if(!result.ok)throw new Error(result.message);
    }catch(error){
     await supabase.storage.from(bucket).remove([path]);
     throw error;
@@ -68,12 +69,11 @@ export function MediaUploadForm(){
   }
  }
 
- return <form id="media-upload-form" action={submit} className="grid gap-3 lg:grid-cols-[1.5fr_.7fr_.7fr_1fr_auto]">
-  <input name="file" type="file" required accept="image/jpeg,image/png,image/webp,image/avif,application/pdf" className="min-w-0 rounded-xl border border-white/10 bg-black/20 px-3 py-2.5 text-sm"/>
-  <select name="category" className="rounded-xl border border-white/10 bg-[#11141c] px-3 py-2.5"><option>Projects</option><option>Design</option><option>Branding</option><option>Profile</option><option>Blog</option><option>Documents</option><option>Other</option></select>
-  <select name="visibility" className="rounded-xl border border-white/10 bg-[#11141c] px-3 py-2.5"><option value="public">Public</option><option value="private">Private</option></select>
-  <input name="altText" placeholder="Alt text" maxLength={240} className="rounded-xl border border-white/10 bg-black/20 px-3 py-2.5"/>
-  <button disabled={busy} className="rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-black disabled:cursor-wait disabled:opacity-60">{busy?"Uploading…":"Upload"}</button>
-  {message&&<p className="lg:col-span-5 text-xs text-white/55" role="status">{message}</p>}
+ return <form id="media-upload-form" action={submit} className="space-y-4">
+  <label className="block text-sm text-white/70">Choose file<input name="file" type="file" required accept="image/jpeg,image/png,image/webp,image/avif,application/pdf" className="mt-2 block w-full rounded-xl border border-white/10 bg-black/20 px-3 py-3 text-sm"/></label>
+  <label className="block text-sm text-white/70">What is this for?<select name="category" className="mt-2 w-full rounded-xl border border-white/10 bg-[#11141c] px-3 py-3"><option>Projects</option><option>Design</option><option>Branding</option><option>Profile</option><option>Blog</option><option>Documents</option><option>Other</option></select></label>
+  <details className="rounded-xl border border-white/[.07] p-4"><summary className="cursor-pointer text-sm text-white/55">Optional file settings</summary><div className="mt-4 grid gap-4 md:grid-cols-2"><label className="text-sm text-white/60">Visibility<select name="visibility" className="mt-2 w-full rounded-xl border border-white/10 bg-[#11141c] px-3 py-3"><option value="public">Public</option><option value="private">Private</option></select></label><label className="text-sm text-white/60">Alt text<input name="altText" placeholder="Describe the image for accessibility" maxLength={240} className="mt-2 w-full rounded-xl border border-white/10 bg-black/20 px-3 py-3"/></label></div></details>
+  <button disabled={busy} className="w-full rounded-xl bg-white px-4 py-3 text-sm font-semibold text-black disabled:cursor-wait disabled:opacity-60">{busy?"Uploading…":"Upload file"}</button>
+  {message&&<p className="text-sm text-white/60" role="status">{message}</p>}
  </form>;
 }

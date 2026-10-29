@@ -14,7 +14,9 @@
       "08137268006",
       "09070725772"
     ],
-    "privacyNote": "Home address, date of birth, religion, marital status, referees and other sensitive personal details are intentionally not published in the portfolio."
+    "privacyNote": "Home address, date of birth, religion, marital status, referees and other sensitive personal details are intentionally not published in the portfolio.",
+    "githubProfile": "https://github.com/Wikis-tech",
+    "githubReview": "Repository review completed October 2026; flagship and supporting projects are intentionally separated."
   },
   "education": [
     {
@@ -39,6 +41,14 @@
       "position": "IT, Product & Creative Support",
       "type": "SIWES / Internship",
       "location": "Lagos, Nigeria",
+      "current": true
+    },
+    {
+      "company": "FMJ Handicraft",
+      "position": "Web Developer & Site Manager",
+      "type": "Remote",
+      "location": "Lagos, Nigeria",
+      "period": "Aug 2024 – Present",
       "current": true
     },
     {
@@ -83,19 +93,27 @@
       "slug": "campuslink",
       "title": "Campus Link",
       "visibility": "public",
-      "published": true
+      "published": true,
+      "repositoryUrl": "https://github.com/Wikis-tech/campuslink",
+      "liveUrl": "https://campuslink-omega-steel.vercel.app",
+      "note": "Flagship student/vendor discovery product."
     },
     {
       "slug": "wisdom-portfolio",
       "title": "Wisdom Portfolio",
       "visibility": "public",
-      "published": true
+      "published": true,
+      "repositoryUrl": "https://github.com/Wikis-tech/wisdom-portfolio",
+      "liveUrl": "https://wisdom-portfolio-five.vercel.app",
+      "note": "CMS-driven portfolio and publishing system."
     },
     {
       "slug": "spip",
       "title": "SPIP — SCM Prospect Intelligence Platform",
       "visibility": "private",
-      "published": false
+      "published": false,
+      "repositoryUrl": "https://github.com/Wikis-tech/scm-spip",
+      "note": "Internal SCM Capital product work; keep the public portfolio summary high level."
     },
     {
       "slug": "scm-capital-creative",
@@ -112,9 +130,11 @@
     {
       "slug": "fmj-handicraft",
       "title": "FMJ Handicraft Website",
-      "visibility": "private",
-      "published": false,
-      "liveUrl": "https://fmjhandicraft.name.ng"
+      "visibility": "public",
+      "published": true,
+      "liveUrl": "https://fmjhandicraft.name.ng",
+      "repositoryUrl": "https://github.com/Wikis-tech/fmj-handicraft-web",
+      "note": "Client website and ongoing site-management work."
     },
     {
       "slug": "gpa-calculator",
@@ -135,6 +155,14 @@
       "visibility": "private",
       "published": false,
       "liveUrl": "https://wikis-tech.rf.gd"
+    },
+    {
+      "slug": "nexora-web3",
+      "title": "Nexora — Web3 Landing Page",
+      "visibility": "public",
+      "published": true,
+      "repositoryUrl": "https://github.com/Wikis-tech/web3-test",
+      "note": "Small responsive PHP/CSS/JavaScript landing-page build; supporting project rather than flagship case study."
     }
   ],
   "lab": [
