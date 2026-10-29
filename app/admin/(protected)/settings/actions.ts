@@ -116,3 +116,33 @@ export async function uploadLogo(fd:FormData){
 export async function uploadFavicon(fd:FormData){
  await uploadBrandAsset(fd,"favicon");
 }
+
+
+export async function finalizeBrandAssetUpload(fd:FormData){
+ const user=await requireCmsUser();
+ const kind=String(fd.get("kind")??"");
+ const path=String(fd.get("path")??"");
+ const mimeType=String(fd.get("mimeType")??"");
+ const byteSize=Number(fd.get("byteSize")||0);
+ if(!["logo","favicon"].includes(kind))throw new Error("Unknown brand image type.");
+ if(!brandImages.includes(mimeType))throw new Error("Use PNG, JPG, WebP or AVIF.");
+ const max=kind==="favicon"?1024*1024:3*1024*1024;
+ if(!Number.isFinite(byteSize)||byteSize<=0||byteSize>max)throw new Error(kind==="favicon"?"Favicon must be 1 MB or smaller.":"Logo must be 3 MB or smaller.");
+ const prefix=`brand/${kind}/${user.id}/`;
+ if(!path.startsWith(prefix))throw new Error("That upload path does not belong to this admin session.");
+
+ const s=await createClient();
+ const folder=path.slice(0,path.lastIndexOf("/"));
+ const filename=path.slice(path.lastIndexOf("/")+1);
+ const {data:objects,error:listError}=await s.storage.from("portfolio-public").list(folder,{search:filename,limit:5});
+ if(listError||!objects?.some(x=>x.name===filename))throw new Error("Uploaded image could not be verified.");
+
+ const publicUrl=s.storage.from("portfolio-public").getPublicUrl(path).data.publicUrl;
+ const column=kind==="logo"?"logo_url":"favicon_url";
+ const {data:updated,error:updateError}=await s.from("site_settings").update({[column]:publicUrl,updated_at:new Date().toISOString()}).eq("singleton_key","default").select("singleton_key").maybeSingle();
+ if(updateError||!updated)throw new Error("The image uploaded, but Site Settings could not be updated.");
+
+ await s.from("activity_logs").insert({user_id:user.id,action:kind==="logo"?"Site logo updated":"Site favicon updated",entity_type:"site_settings",metadata:{kind,path}});
+ refreshSite();
+ return {url:publicUrl};
+}
