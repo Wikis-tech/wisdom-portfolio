@@ -51,7 +51,8 @@ export function MediaUploadForm(){
    payload.set("altText",String(formData.get("altText")||""));
 
    try{
-    await finalizeMediaUpload(payload);
+    const result=await finalizeMediaUpload(payload);
+    if(!result.ok)throw new Error(result.message);
    }catch(error){
     await supabase.storage.from(bucket).remove([path]);
     throw error;
