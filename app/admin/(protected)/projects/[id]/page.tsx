@@ -25,7 +25,7 @@ export default async function ProjectEditor({params}:{params:Promise<{id:string}
  return <main className="mx-auto max-w-5xl">
   <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
    <div>
-    <p className="text-xs font-semibold tracking-[.18em] text-[#6f8cff]">PROJECT EDITOR</p>
+    <p className="text-xs font-semibold tracking-[.18em] text-[#6f8cff]">WEBSITES & APPS / EDIT</p>
     <h1 className="mt-3 text-4xl font-semibold">{p.title}</h1>
     <p className="mt-2 text-sm text-white/40">{p.content_state} · {p.status.replaceAll("_"," ")}</p>
    </div>
@@ -58,20 +58,11 @@ export default async function ProjectEditor({params}:{params:Promise<{id:string}
     <div className="mt-5 flex flex-wrap gap-2">{c?.map(x=><label key={x.id} className="rounded-full border border-white/10 px-3 py-2 text-sm text-white/50"><input name="categories" value={x.id} type="checkbox" defaultChecked={selected.has(x.id)} className="mr-2"/>{x.name}</label>)}</div>
    </section>
 
-   <section className="rounded-2xl border border-[#183a7a]/45 bg-[linear-gradient(145deg,rgba(13,31,72,.22),rgba(255,255,255,.015))] p-6">
-    <p className="text-xs font-semibold tracking-[.16em] text-[#7d95ff]">VISUAL PRESENTATION</p>
-    <h2 className="mt-2 text-2xl font-semibold">How this work appears publicly</h2>
-    <p className="mt-2 max-w-3xl text-sm leading-6 text-white/40">Upload a preview image for Work cards and an optional hero image for the case-study page. Web/software projects look best with a clean desktop or product screenshot.</p>
-    <div className="mt-6 grid gap-4 lg:grid-cols-2">
-     <form action={uploadProjectMedia} className="rounded-2xl border border-white/[.08] bg-black/20 p-4"><input type="hidden" name="projectId" value={id}/><input type="hidden" name="kind" value="card"/><div className="aspect-[16/10] overflow-hidden rounded-xl border border-dashed border-white/10 bg-[#081024]">{cardUrl?<div role="img" aria-label="Current project preview" className="h-full w-full bg-cover bg-center" style={{backgroundImage:`url("${cardUrl}")`}}/>:<div className="flex h-full items-center justify-center text-center"><div><p className="text-sm font-medium text-white/55">Project preview image</p><p className="mt-1 text-xs text-white/25">Shown on Work cards</p></div></div>}</div><input name="file" type="file" accept="image/png,image/jpeg,image/webp,image/avif" required className="mt-4 block w-full text-xs text-white/45 file:mr-3 file:rounded-lg file:border-0 file:bg-white file:px-3 file:py-2 file:text-xs file:font-semibold file:text-black"/><button className="mt-3 w-full rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-black">Update preview image</button></form>
-     <form action={uploadProjectMedia} className="rounded-2xl border border-white/[.08] bg-black/20 p-4"><input type="hidden" name="projectId" value={id}/><input type="hidden" name="kind" value="hero"/><div className="aspect-[16/10] overflow-hidden rounded-xl border border-dashed border-white/10 bg-[#081024]">{heroUrl?<div role="img" aria-label="Current project hero" className="h-full w-full bg-cover bg-center" style={{backgroundImage:`url("${heroUrl}")`}}/>:<div className="flex h-full items-center justify-center text-center"><div><p className="text-sm font-medium text-white/55">Case-study hero image</p><p className="mt-1 text-xs text-white/25">Optional large visual</p></div></div>}</div><input name="file" type="file" accept="image/png,image/jpeg,image/webp,image/avif" required className="mt-4 block w-full text-xs text-white/45 file:mr-3 file:rounded-lg file:border-0 file:bg-white file:px-3 file:py-2 file:text-xs file:font-semibold file:text-black"/><button className="mt-3 w-full rounded-xl border border-white/10 px-4 py-2.5 text-sm font-medium">Update hero image</button></form>
-    </div>
-   </section>
-
+   <details open={false} className="rounded-2xl border border-[#536dfe]/20 bg-[#536dfe]/[.035] p-6"><summary className="cursor-pointer text-base font-semibold text-white/80">Optional: Full case study and extra details</summary>
    <section className="rounded-2xl border border-[#536dfe]/20 bg-[#536dfe]/[.035] p-6">
     <p className="text-xs font-semibold tracking-[.16em] text-[#8097ff]">PROBLEM-FIRST CASE STUDY</p>
-    <h2 className="mt-2 text-2xl font-semibold">Make the value obvious.</h2>
-    <p className="mt-2 max-w-3xl text-sm leading-6 text-white/40">Every public project must answer these four questions before it can be published. Write for the person viewing the work, not for the technology stack.</p>
+    <h2 className="mt-2 text-2xl font-semibold">Optional: tell the full story behind this project.</h2>
+    <p className="mt-2 max-w-3xl text-sm leading-6 text-white/40">Add a detailed case study when you have more to share. Simple website listings can use a name, description, screenshot and link.</p>
     <div className="mt-6 grid gap-4">
      <Case label="Here is the problem." name="problem" value={p.problem} placeholder="What frustration, inefficiency, risk or opportunity existed before this project?"/>
      <Case label="Here is what I built." name="solution" value={p.solution} placeholder="What did you design or build, and how does it solve the problem?"/>
@@ -79,7 +70,7 @@ export default async function ProjectEditor({params}:{params:Promise<{id:string}
      <Case label="Here is what changed." name="outcome" value={p.outcome} placeholder="What improved, became possible, was validated, shipped or learned? Use measurable evidence when you have it."/>
     </div>
    </section>
-
+   </details>
    <section className="rounded-2xl border border-white/[.08] bg-white/[.02] p-6">
     <p className="text-xs font-semibold tracking-[.16em] text-[#8097ff]">SEO / SHARING</p>
     <h2 className="mt-2 text-2xl font-semibold">Project metadata</h2>
@@ -97,6 +88,17 @@ export default async function ProjectEditor({params}:{params:Promise<{id:string}
     <button formAction={publishProject} className="rounded-xl bg-white px-5 py-3 text-sm font-semibold text-black">Save & Publish</button>
    </div>
   </form>
+
+   <section className="rounded-2xl border border-[#183a7a]/45 bg-[linear-gradient(145deg,rgba(13,31,72,.22),rgba(255,255,255,.015))] p-6">
+    <p className="text-xs font-semibold tracking-[.16em] text-[#7d95ff]">VISUAL PRESENTATION</p>
+    <h2 className="mt-2 text-2xl font-semibold">How this work appears publicly</h2>
+    <p className="mt-2 max-w-3xl text-sm leading-6 text-white/40">Upload a preview image for Work cards and an optional hero image for the case-study page. Web/software projects look best with a clean desktop or product screenshot.</p>
+    <div className="mt-6 grid gap-4 lg:grid-cols-2">
+     <form action={uploadProjectMedia} className="rounded-2xl border border-white/[.08] bg-black/20 p-4"><input type="hidden" name="projectId" value={id}/><input type="hidden" name="kind" value="card"/><div className="aspect-[16/10] overflow-hidden rounded-xl border border-dashed border-white/10 bg-[#081024]">{cardUrl?<div role="img" aria-label="Current project preview" className="h-full w-full bg-cover bg-center" style={{backgroundImage:`url("${cardUrl}")`}}/>:<div className="flex h-full items-center justify-center text-center"><div><p className="text-sm font-medium text-white/55">Project preview image</p><p className="mt-1 text-xs text-white/25">Shown on Work cards</p></div></div>}</div><input name="file" type="file" accept="image/png,image/jpeg,image/webp,image/avif" required className="mt-4 block w-full text-xs text-white/45 file:mr-3 file:rounded-lg file:border-0 file:bg-white file:px-3 file:py-2 file:text-xs file:font-semibold file:text-black"/><button className="mt-3 w-full rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-black">Update preview image</button></form>
+     <form action={uploadProjectMedia} className="rounded-2xl border border-white/[.08] bg-black/20 p-4"><input type="hidden" name="projectId" value={id}/><input type="hidden" name="kind" value="hero"/><div className="aspect-[16/10] overflow-hidden rounded-xl border border-dashed border-white/10 bg-[#081024]">{heroUrl?<div role="img" aria-label="Current project hero" className="h-full w-full bg-cover bg-center" style={{backgroundImage:`url("${heroUrl}")`}}/>:<div className="flex h-full items-center justify-center text-center"><div><p className="text-sm font-medium text-white/55">Case-study hero image</p><p className="mt-1 text-xs text-white/25">Optional large visual</p></div></div>}</div><input name="file" type="file" accept="image/png,image/jpeg,image/webp,image/avif" required className="mt-4 block w-full text-xs text-white/45 file:mr-3 file:rounded-lg file:border-0 file:bg-white file:px-3 file:py-2 file:text-xs file:font-semibold file:text-black"/><button className="mt-3 w-full rounded-xl border border-white/10 px-4 py-2.5 text-sm font-medium">Update hero image</button></form>
+    </div>
+   </section>
+
 
   <section className="mt-8 rounded-2xl border border-white/[.08] bg-white/[.02] p-6">
    <p className="text-xs font-semibold tracking-[.16em] text-white/30">ADDITIONAL STORY</p><h2 className="mt-2 text-xl font-semibold">Supporting content blocks</h2><p className="mt-2 text-sm text-white/35">Use these for screenshots, implementation details, process notes, technology and supporting evidence after the four core questions.</p>
